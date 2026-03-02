@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+	  <PackageId>CampusCore.Domain</PackageId>
+	  <Authors>CampusCore.Domain</Authors>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\CampusCore.Tools\CampusCore.Tools.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Students\" />
+	</ItemGroup>
+</Project>

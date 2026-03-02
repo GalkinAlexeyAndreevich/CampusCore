@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+	  <PackageId>CampusCore.BackOffice</PackageId>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="client-app\**" />
+		<Content Remove="client-app\**" />
+		<EmbeddedResource Remove="client-app\**" />
+		<None Remove="client-app\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\CampusCore.Domain\CampusCore.Domain.csproj" />
+		<ProjectReference Include="..\CampusCore.Services\CampusCore.Services.csproj" />
+		<ProjectReference Include="..\CampusCore.Tools\CampusCore.Tools.csproj" />
+	</ItemGroup>
+</Project>

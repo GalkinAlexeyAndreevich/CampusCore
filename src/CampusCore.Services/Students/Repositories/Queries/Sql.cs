@@ -26,7 +26,7 @@ internal static class Sql
                 @p_average_grade,
                 @p_special_notes,
                 @p_group_id,
-                @p_created_at
+                @p_date_now
             )
         ON CONFLICT (id) DO UPDATE SET
         last_name = @p_last_name,
@@ -36,7 +36,8 @@ internal static class Sql
         age = @p_age,
         average_grade = @p_average_grade,
         special_notes = @p_special_notes,
-        group_id = @p_group_id
+        group_id = @p_group_id,
+        updated_at = @p_date_now
         """;
 
     internal static String GetAllStudents =>

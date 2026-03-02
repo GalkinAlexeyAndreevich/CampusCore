@@ -24,7 +24,7 @@ public class StudentsRepository : IStudentsRepository
 				parameters.AddWithValue("p_average_grade", studentBlank.AverageGrade!);
 				parameters.AddWithValue("p_special_notes", (Object?)studentBlank.SpecialNotes ?? DBNull.Value);
 				parameters.AddWithValue("p_group_id", studentBlank.GroupId!.Value);
-				parameters.AddWithValue("p_created_at", DateTime.UtcNow);
+				parameters.AddWithValue("p_date_now", DateTime.UtcNow);
 			}
 		);
 	}

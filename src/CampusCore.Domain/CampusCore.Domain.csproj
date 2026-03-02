@@ -6,7 +6,4 @@
 	<ItemGroup>
 		<ProjectReference Include="..\CampusCore.Tools\CampusCore.Tools.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Students\" />
-	</ItemGroup>
 </Project>

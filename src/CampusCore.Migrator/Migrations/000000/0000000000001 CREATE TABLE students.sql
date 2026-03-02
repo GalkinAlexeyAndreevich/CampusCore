@@ -14,7 +14,7 @@ CREATE TABLE students (
     id uuid NOT NULL,
     last_name varchar NOT NULL,
     first_name varchar NOT NULL,
-    patronymic varchar,
+    patronymic varchar NULL,
     gender varchar NOT NULL,
     age int4 NOT NULL CHECK (age > 0),
     average_grade numeric(3,2) NOT NULL CHECK (average_grade BETWEEN 0 AND 5),

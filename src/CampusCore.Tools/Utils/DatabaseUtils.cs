@@ -10,6 +10,28 @@ public static class DatabaseUtils
 	public static Int32 Execute(String sql, Action<NpgsqlParameterCollection> getParameters) =>
 		UseSqlCommand(sql, getParameters, (command) => command.ExecuteNonQuery());
 
+	public static T[] GetAll<T>(
+		String sql,
+		Action<NpgsqlParameterCollection> getParameters,
+		Func<NpgsqlDataReader, T> mapper
+	)
+	{
+		return UseSqlCommand<T[]>(
+			sql,
+			getParameters,
+			(command) =>
+			{
+				using NpgsqlDataReader reader = command.ExecuteReader();
+
+				List<T> values = [];
+				while (reader.Read())
+					values.Add(mapper(reader));
+
+				return [.. values];
+			}
+		);
+	}
+
 	public static Page<T> GetPage<T>(
 		String sql,
 		Action<NpgsqlParameterCollection> getParameters,

@@ -13,7 +13,8 @@ internal static class Sql
                 age,
                 average_grade,
                 special_notes,
-                group_id
+                group_id,
+                created_at
             )
             VALUES (
                 @p_id,
@@ -24,7 +25,8 @@ internal static class Sql
                 @p_age,
                 @p_average_grade,
                 @p_special_notes,
-                @p_group_id
+                @p_group_id,
+                @p_created_at
             )
         ON CONFLICT (id) DO UPDATE SET
         last_name = @p_last_name,

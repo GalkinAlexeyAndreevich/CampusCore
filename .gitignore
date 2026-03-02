@@ -1,8 +1,7 @@
 .idea/ 
 .vs/
 .config/
- 
-package-lock.json
+
 node_modules
 src/CampusCore.BackOffice/wwwroot/dist/ 
 

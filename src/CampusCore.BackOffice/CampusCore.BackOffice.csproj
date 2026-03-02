@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
 	  <PackageId>CampusCore.BackOffice</PackageId>
+	  <SpaRoot>client-app\</SpaRoot>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="client-app\**" />
@@ -13,4 +14,12 @@
 		<ProjectReference Include="..\CampusCore.Services\CampusCore.Services.csproj" />
 		<ProjectReference Include="..\CampusCore.Tools\CampusCore.Tools.csproj" />
 	</ItemGroup>
+
+	<!-- Build React/webpack assets into wwwroot/dist before publishing so ASP.NET can serve them -->
+	<Target Name="BuildClientApp" BeforeTargets="ComputeFilesToPublish" Condition="Exists('$(SpaRoot)package.json')">
+		<Message Importance="high" Text="Building client-app (webpack)..." />
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm ci" Condition="Exists('$(SpaRoot)package-lock.json')" />
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" Condition="!Exists('$(SpaRoot)package-lock.json')" />
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run production" />
+	</Target>
 </Project>

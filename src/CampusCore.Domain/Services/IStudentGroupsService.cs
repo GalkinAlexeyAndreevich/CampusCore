@@ -6,7 +6,7 @@ namespace CampusCore.Domain.Services;
 public interface IStudentGroupsService
 {
     Result SaveStudentGroup(StudentGroupBlank studentGroupBlank);
-    StudentGroup[] GetAllStudentGroup();
+    StudentGroup[] GetAllStudentGroups();
     StudentGroup? GetStudentGroup(Guid groupId);
     Result MarkStudentGroupAsDeleted(Guid groupId);
 }

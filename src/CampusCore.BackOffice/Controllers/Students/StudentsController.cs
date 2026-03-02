@@ -1,33 +1,33 @@
-﻿using CampusCore.Domain.Products;
+﻿using CampusCore.Domain.Students;
 using CampusCore.Domain.Services;
 using CampusCore.Tools.Types.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CampusCore.BackOffice.Controllers.Students;
 
-public class StudentsController(IProductsService productsService) : AppController
+public class StudentsController(IStudentsService studentsService) : AppController
 {
 	[HttpPost("students/save")]
-	public Result SaveProducts([FromBody] ProductBlank productBlank)
+	public Result SaveStudents([FromBody] StudentBlank studentBlank)
 	{
-		return productsService.SaveProduct(productBlank);
+		return studentsService.SaveStudent(studentBlank);
 	}
 
-	[HttpGet("students/get_page")]
-	public Page<Product> GetStudentsPage([FromQuery] Int32 page, [FromQuery] Int32 countInPage)
+	[HttpGet("students")]
+	public Student[] GetStudentsPage()
 	{
-		return productsService.GetProductsPage(page, countInPage);
+		return studentsService.GetAllStudents();
 	}
 
 	[HttpGet("students/get_by_id")]
-	public Product? GetStudent([FromQuery] Guid productId)
+	public Student? GetStudent([FromQuery] Guid studentId)
 	{
-		return productsService.GetProduct(productId);
+		return studentsService.GetStudent(studentId);
 	}
 
-	[HttpGet("students/mark_student_as_removed")]
-	public Result MarkStudentAsRemoved([FromQuery] Guid productId)
+	[HttpGet("students/mark_as_deleted")]
+	public Result MarkStudentAsRemoved([FromQuery] Guid studentId)
 	{
-		return productsService.MarkProductAsRemoved(productId);
+		return studentsService.MarkStudentAsDeleted(studentId);
 	}
 }

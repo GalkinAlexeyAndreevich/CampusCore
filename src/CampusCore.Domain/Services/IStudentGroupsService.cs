@@ -3,7 +3,7 @@ using CampusCore.Tools.Types.Results;
 
 namespace CampusCore.Domain.Services;
 
-public interface IStudentGroupService
+public interface IStudentGroupsService
 {
     Result SaveStudentGroup(StudentGroupBlank studentGroupBlank);
     StudentGroup[] GetAllStudentGroup();

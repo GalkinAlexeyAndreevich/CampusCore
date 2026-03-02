@@ -14,7 +14,7 @@ public class StudentsController(IStudentsService studentsService) : AppControlle
 	}
 
 	[HttpGet("students")]
-	public Student[] GetStudentsPage()
+	public Student[] GetAllStudents()
 	{
 		return studentsService.GetAllStudents();
 	}
@@ -26,7 +26,7 @@ public class StudentsController(IStudentsService studentsService) : AppControlle
 	}
 
 	[HttpGet("students/mark_as_deleted")]
-	public Result MarkStudentAsRemoved([FromQuery] Guid studentId)
+	public Result MarkStudentAsDeleted([FromQuery] Guid studentId)
 	{
 		return studentsService.MarkStudentAsDeleted(studentId);
 	}

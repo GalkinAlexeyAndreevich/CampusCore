@@ -6,7 +6,7 @@ namespace CampusCore.Domain.Services;
 public interface IStudentsService
 {
     Result SaveStudent(StudentBlank studentBlank);
-    Student[] GetAllStudent();
+    Student[] GetAllStudents();
     Student? GetStudent(Guid studentId);
     Result MarkStudentAsDeleted(Guid studentId);
 }

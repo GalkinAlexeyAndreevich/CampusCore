@@ -1,7 +1,10 @@
+import { TrainingFormat } from "./enums/trainingFromat";
+
 export interface StudentGroup {
 	id: string;
 	name: string;
-	trainingFormat: string;
+	abbreviation: string;
+	trainingFormat: TrainingFormat;
 	studyStartYear: number;
 	studyEndYear: number;
 }
@@ -14,6 +17,7 @@ export function mapToStudentGroup(data: StudentGroupSource): StudentGroup {
   return {
     id: data.id,
     name: data.name,
+    abbreviation: data.abbreviation,
     trainingFormat: data.trainingFormat,
     studyStartYear: data.studyStartYear,
     studyEndYear: data.studyEndYear,
@@ -24,7 +28,8 @@ export function mapToStudentGroup(data: StudentGroupSource): StudentGroup {
 interface StudentGroupSource {
   id: string;
   name: string;
-  trainingFormat: string;
+  abbreviation: string;
+  trainingFormat: TrainingFormat;
   studyStartYear: number;
   studyEndYear: number;
   [key: string]: unknown; 

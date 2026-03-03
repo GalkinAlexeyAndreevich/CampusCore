@@ -29,5 +29,5 @@ npm run development
 #### Сервер (ASP.NET)
 
 ```bash
-dotnet run --project "src/CampusCore.BackOffice/CampusCore.BackOffice.csproj"
+dotnet run --project "src/CampusCore.BackOffice/CampusCore.BackOffice.csproj" --launch-profile "CampusCore.BackOffice"
 ```

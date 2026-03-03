@@ -10,98 +10,80 @@ import {
 	Typography
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { ProductCategory } from '../../domain/products/enums/productCategory';
-import { Product } from '../../domain/products/product';
-import { ProductsProvider } from '../../domain/products/productsProvider';
 import { Button } from '../../shared/components/buttons/button';
 import { ConfirmModal } from '../../shared/components/modals/confirmModal';
 import { Notification } from '../../shared/components/notification';
-import { TablePagination } from '../../shared/components/tablePagination';
 import { ConfirmModalState } from '../../shared/types/confirmModalState';
-import { Pagination } from '../../tools/types/pagination';
-import { ProductEditorModal } from './modals/studentGroupEditorModal';
+import { StudentGroupEditorModal } from './modals/studentGroupEditorModal';
+import { StudentGroup } from '../../domain/studentGroups/studentGroups';
+import { StudentGroupProvider } from '../../domain/studentGroups/studentGroupProvider';
+import { TrainingFormatUtils } from '../../domain/studentGroups/enums/trainingFromat';
 
-type ProductEditorModalState = {
-	productId: string | null;
+type StudentGroupEditorModalState = {
+	studentGroupId: string | null;
 	isOpen: boolean;
 };
 
-interface RemoveProductConfirmModalState extends ConfirmModalState {
-	productId: string | null;
+interface RemoveStudentGroupConfirmModalState extends ConfirmModalState {
+	studentGroupId: string | null;
 }
 
-export function ProductsPage() {
-	const [products, setProducts] = useState<Product[]>([]);
-	const [pagination, setPagination] = useState<Pagination>(Pagination.default);
+export function StudentGroupPage() {
+	const [studentGroups, setStudentGroups] = useState<StudentGroup[]>([]);
 
-	const [productEditorModalState, setProductEditorModalState] = useState<ProductEditorModalState>({
-		productId: null,
+	const [studentGroupEditorModalState, setStudentGroupEditorModalState] = useState<StudentGroupEditorModalState>({
+		studentGroupId: null,
 		isOpen: false
 	});
-	const [removeProductConfirmModalState, setRemoveProductConfirmModalState] =
-		useState<RemoveProductConfirmModalState>({ productId: null, ...ConfirmModalState.getClosed() });
+	const [removeStudentGroupConfirmModalState, setRemoveStudentGroupConfirmModalState] =
+		useState<RemoveStudentGroupConfirmModalState>({ studentGroupId: null, ...ConfirmModalState.getClosed() });
 
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 	useEffect(() => {
-		loadProductsPage({ ...pagination });
+		loadStudentGroups();
 	}, []);
 
-	async function loadProductsPage(newPagination: Pagination) {
+	async function loadStudentGroups() {
 		try {
-			const productsPage = await ProductsProvider.getProductsPage(newPagination.page, newPagination.countInPage);
-
-			setProducts(productsPage.values);
-			setPagination((pagination) => ({
-				...pagination,
-				page: newPagination.page,
-				countInPage: newPagination.countInPage,
-				totalRows: productsPage.totalRows
-			}));
+			const studentGroups = await StudentGroupProvider.getAllStudentGroups();
+			setStudentGroups(studentGroups);
 		} catch (e) {
 			const message = e instanceof Error ? e.message : 'Unknown error';
 			setErrorMessage(message);
 		}
 	}
 
-	function changePage(page: number) {
-		loadProductsPage({ ...pagination, page });
+	function openStudentGroupEditorModal(studentGroupId?: string) {
+		setStudentGroupEditorModalState({ studentGroupId: studentGroupId ?? null, isOpen: true });
 	}
 
-	function changeCountInPage(countInPage: number) {
-		loadProductsPage({ ...pagination, countInPage });
+	function closeStudentGroupEditorModal(isEdited: boolean) {
+		if (isEdited) loadStudentGroups();
+		setStudentGroupEditorModalState({ studentGroupId: null, isOpen: false });
 	}
 
-	function openProductEditorModal(productId?: string) {
-		setProductEditorModalState({ productId: productId ?? null, isOpen: true });
-	}
-
-	function closeProductEditorModal(isEdited: boolean) {
-		if (isEdited) loadProductsPage({ ...pagination, page: 1 });
-		setProductEditorModalState({ productId: null, isOpen: false });
-	}
-
-	function openRemoveProductConfirmModal(productId: string, productName: string) {
-		setRemoveProductConfirmModalState({
-			productId,
-			...ConfirmModalState.getOpen(`Вы действительно хотите удалить продукт "${productName}"`)
+	function openRemoveStudentGroupConfirmModal(studentGroupId: string, studentGroupName: string) {
+		setRemoveStudentGroupConfirmModalState({
+			studentGroupId,
+			...ConfirmModalState.getOpen(`Вы действительно хотите удалить студенческую группу "${studentGroupName}"`)
 		});
 	}
 
-	async function closeRemoveProductConfirmModal(isConfirmed: boolean) {
+	async function closeRemoveStudentGroupConfirmModal(isConfirmed: boolean) {
 		if (isConfirmed) {
-			if (removeProductConfirmModalState.productId == null) throw 'Cannot remove product with ProductId = null';
+			if (removeStudentGroupConfirmModalState.studentGroupId == null) throw 'Cannot remove student group with StudentGroupId = null';
 
-			const result = await ProductsProvider.markProductAsRemoved(removeProductConfirmModalState.productId);
+			const result = await StudentGroupProvider.markStudentGroupAsRemoved(removeStudentGroupConfirmModalState.studentGroupId);
 			if (!result.isSuccess) {
 				setErrorMessage(result.errors.map((error) => error.message).join('. '));
 				return;
 			}
 
-			loadProductsPage({ ...pagination, page: 1 });
+			loadStudentGroups();
 		}
 
-		setRemoveProductConfirmModalState({ productId: null, ...ConfirmModalState.getClosed() });
+		setRemoveStudentGroupConfirmModalState({ studentGroupId: null, ...ConfirmModalState.getClosed() });
 	}
 
 	return (
@@ -118,48 +100,51 @@ export function ProductsPage() {
 					paddingX: '12px',
 					paddingY: '6px'
 				}}>
-				<Typography variant='h6'>Продукты</Typography>
-				<Button variant='add' title='Создать' onClick={() => openProductEditorModal()} />
+				<Typography variant='h6'>Студенческие группы</Typography>
+				<Button variant='add' title='Создать' onClick={() => openStudentGroupEditorModal()} />
 			</Paper>
 			<Paper elevation={3} sx={{ height: 'calc(100% - 52px)' }}>
 				<TableContainer sx={{ height: 'inherit' }}>
 					<Table stickyHeader>
 						<TableHead>
-							<TableRow>
-								<TableCell>Категория</TableCell>
+							<TableRow>								
 								<TableCell>Название</TableCell>
-								<TableCell>Описание</TableCell>
-								<TableCell>Цена</TableCell>
+								<TableCell>Абревиатура</TableCell>
+								<TableCell>Год начала обучения</TableCell>
+								<TableCell>Год окончания обучения</TableCell>
+								<TableCell>Формат обучения</TableCell>
 								<TableCell>Управление</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{products.length === 0 && (
+							{studentGroups.length === 0 && (
 								<TableRow>
 									<TableCell colSpan={5}>Пусто</TableCell>
 								</TableRow>
 							)}
-							{products.map((product) => {
+							{studentGroups.map((studentGroup) => {
 								return (
-									<TableRow key={`product__${product.id}`}>
+									<TableRow key={`studentGroup__${studentGroup.id}`}>
+
+										<TableCell width='20%'>{studentGroup.name}</TableCell>
+										<TableCell width='20%'>{studentGroup.abbreviation}</TableCell>
+										<TableCell width='15%'>{studentGroup.studyStartYear}</TableCell>
+										<TableCell width='15%'>{studentGroup.studyEndYear}</TableCell>
 										<TableCell width='15%'>
-											{ProductCategory.getDisplayName(product.category)}
+											{TrainingFormatUtils.getDisplayName(studentGroup.trainingFormat)}
 										</TableCell>
-										<TableCell width='20%'>{product.name}</TableCell>
-										<TableCell width='40%'>{product.description ?? '—'}</TableCell>
-										<TableCell width='15%'>{product.price}</TableCell>
 										<TableCell>
 											<Button
 												type='icon'
 												variant='edit'
 												size='small'
-												onClick={() => openProductEditorModal(product.id)}
+												onClick={() => openStudentGroupEditorModal(studentGroup.id)}
 											/>
 											<Button
 												type='icon'
 												variant='remove'
 												size='small'
-												onClick={() => openRemoveProductConfirmModal(product.id, product.name)}
+												onClick={() => openRemoveStudentGroupConfirmModal(studentGroup.id, studentGroup.name)}
 											/>
 										</TableCell>
 									</TableRow>
@@ -168,24 +153,16 @@ export function ProductsPage() {
 						</TableBody>
 					</Table>
 				</TableContainer>
-				<TablePagination
-					countInPageOptions={Pagination.getPageSizeOptions()}
-					page={pagination.page}
-					countInPage={pagination.countInPage}
-					totalRows={pagination.totalRows}
-					changePage={(page) => changePage(page)}
-					changeCountInPage={(countInPage) => changeCountInPage(countInPage)}
-				/>
 			</Paper>
-			<ProductEditorModal
-				productId={productEditorModalState.productId}
-				onClose={closeProductEditorModal}
-				isOpen={productEditorModalState.isOpen}
+			<StudentGroupEditorModal
+				studentGroupId={studentGroupEditorModalState.studentGroupId}
+				onClose={closeStudentGroupEditorModal}
+				isOpen={studentGroupEditorModalState.isOpen}
 			/>
 			<ConfirmModal
-				title={removeProductConfirmModalState.title}
-				onClose={(isConfirmed) => closeRemoveProductConfirmModal(isConfirmed)}
-				isOpen={removeProductConfirmModalState.isOpen}
+				title={removeStudentGroupConfirmModalState.title}
+				onClose={(isConfirmed) => closeRemoveStudentGroupConfirmModal(isConfirmed)}
+				isOpen={removeStudentGroupConfirmModalState.isOpen}
 			/>
 			{String.isNotNullOrWhitespace(errorMessage) && (
 				<Notification severity='error' message={errorMessage} onClose={() => setErrorMessage(null)} />

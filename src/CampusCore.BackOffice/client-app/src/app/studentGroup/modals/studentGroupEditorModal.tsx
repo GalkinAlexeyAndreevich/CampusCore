@@ -1,50 +1,50 @@
 import React, { useEffect, useState } from 'react';
-import { ProductCategory } from '../../../domain/products/enums/productCategory';
-import { Product } from '../../../domain/products/product';
-import { ProductBlank } from '../../../domain/products/productBlank';
-import { ProductsProvider } from '../../../domain/products/productsProvider';
 import { Button } from '../../../shared/components/buttons/button';
 import { Input } from '../../../shared/components/inputs/input';
 import { Modal } from '../../../shared/components/modals/modal';
 import { Notification } from '../../../shared/components/notification';
 import { Enum } from '../../../tools/types/enum';
+import { StudentGroupBlank, StudentGroupBlankUtils } from '../../../domain/studentGroups/studentBlank';
+import { StudentGroup } from '../../../domain/studentGroups/studentGroups';
+import { TrainingFormat, TrainingFormatUtils } from '../../../domain/studentGroups/enums/trainingFromat';
+import { StudentGroupProvider } from '../../../domain/studentGroups/studentGroupProvider';
 
 interface Props {
-	productId: string | null;
+	studentGroupId: string | null;
 	onClose: (isEdited: boolean) => void;
 	isOpen: boolean;
 }
 
-export function ProductEditorModal(props: Props) {
-	const [productBlank, setProductBlank] = useState<ProductBlank>(ProductBlank.getDefault());
+export function StudentGroupEditorModal(props: Props) {
+	const [studentGroupBlank, setStudentGroupBlank] = useState<StudentGroupBlank>(StudentGroupBlankUtils.getDefault());
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (!props.isOpen) return;
 
-		async function loadProductBlank() {
-			let productBlank: ProductBlank | null = null;
+		async function loadStudentGroupBlank() {
+			let studentGroupBlank: StudentGroupBlank | null = null;
 
-			if (props.productId != null) {
-				const product: Product | null = await ProductsProvider.getProductById(props.productId);
-				if (product == null) throw 'Product is null';
+			if (props.studentGroupId != null) {
+				const studentGroup: StudentGroup | null = await StudentGroupProvider.getStudentGroupById(props.studentGroupId);
+				if (studentGroup == null) throw 'Student group is null';
 
-				productBlank = ProductBlank.fromProduct(product);
+				studentGroupBlank = StudentGroupBlankUtils.fromStudentGroup(studentGroup);
 			}
 
-			setProductBlank(productBlank ?? ProductBlank.getDefault());
+			setStudentGroupBlank(studentGroupBlank ?? StudentGroupBlankUtils.getDefault());
 		}
 
-		loadProductBlank();
+		loadStudentGroupBlank();
 
 		return () => {
-			setProductBlank(ProductBlank.getDefault());
+			setStudentGroupBlank(StudentGroupBlankUtils.getDefault());
 			setErrorMessage(null);
 		};
-	}, [props.isOpen, props.productId]);
+	}, [props.isOpen, props.studentGroupId]);
 
-	async function saveProduct() {
-		const result = await ProductsProvider.saveProduct(productBlank);
+	async function saveStudentGroup() {
+		const result = await StudentGroupProvider.saveStudentGroup(studentGroupBlank);
 		if (!result.isSuccess) {
 			setErrorMessage(result.getErrorString());
 			return;
@@ -56,7 +56,7 @@ export function ProductEditorModal(props: Props) {
 	return (
 		<>
 			<Modal onClose={() => props.onClose(false)} isOpen={props.isOpen}>
-				<Modal.Header onClose={() => props.onClose(false)}>Редактор продукта</Modal.Header>
+				<Modal.Header onClose={() => props.onClose(false)}>Редактор студенческой группы</Modal.Header>
 				<Modal.Body
 					sx={{
 						maxWidth: '800px',
@@ -66,42 +66,48 @@ export function ProductEditorModal(props: Props) {
 						gap: '12px'
 					}}>
 					<Input
-						variant='select'
-						title='Выберите категорию'
-						options={Enum.getNumberValues<ProductCategory>(ProductCategory)}
-						getOptionLabel={(option) => ProductCategory.getDisplayName(option)}
-						isOptionEqualToValue={(a, b) => a === b}
-						value={productBlank.category}
-						onChange={(category) => setProductBlank((productBlank) => ({ ...productBlank, category }))}
-						required
-					/>
-					<Input
 						variant='text'
 						title='Введите название'
-						value={productBlank.name}
-						onChange={(name) => setProductBlank((productBlank) => ({ ...productBlank, name }))}
+						value={studentGroupBlank.name}
+						onChange={(name) => setStudentGroupBlank((studentGroupBlank) => ({ ...studentGroupBlank, name }))}
 						required
 					/>
 					<Input
 						variant='text-area'
-						title='Введите описание'
+						title='Введите аббревиатуру'
 						minRows={2}
-						value={productBlank.description}
-						onChange={(description) =>
-							setProductBlank((productBlank) => ({ ...productBlank, description }))
+						value={studentGroupBlank.abbreviation}
+						onChange={(abbreviation) =>
+							setStudentGroupBlank((studentGroupBlank) => ({ ...studentGroupBlank, abbreviation }))
 						}
 					/>
 					<Input
 						variant='number'
-						title='Введите цену'
-						value={productBlank.price}
-						onChange={(price) => setProductBlank((productBlank) => ({ ...productBlank, price }))}
-						isAvailableFractionValue
+						title='Введите год начала обучения'
+						value={studentGroupBlank.studyStartYear}
+						onChange={(studyStartYear) => setStudentGroupBlank((studentGroupBlank) => ({ ...studentGroupBlank, studyStartYear }))}
+						required
+					/>
+					<Input
+						variant='number'
+						title='Введите год окончания обучения'
+						value={studentGroupBlank.studyEndYear}
+						onChange={(studyEndYear) => setStudentGroupBlank((studentGroupBlank) => ({ ...studentGroupBlank, studyEndYear }))}
+						required
+					/>
+					<Input
+						variant='select'
+						title='Выберите формат обучения'
+						options={Enum.getNumberValues<TrainingFormat>(TrainingFormat)}
+						getOptionLabel={(option) => TrainingFormatUtils.getDisplayName(option)}
+						isOptionEqualToValue={(a, b) => a === b}
+						value={studentGroupBlank.trainingFormat}
+						onChange={(trainingFormat) => setStudentGroupBlank((studentGroupBlank) => ({ ...studentGroupBlank, trainingFormat }))}
 						required
 					/>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant='save' onClick={() => saveProduct()} />
+					<Button variant='save' onClick={() => saveStudentGroup()} />
 				</Modal.Footer>
 			</Modal>
 			{String.isNotNullOrWhitespace(errorMessage) && (

@@ -18,7 +18,7 @@ public class StudentGroupsRepository : IStudentGroupsRepository
 				parameters.AddWithValue("p_id", studentGroupBlank.Id!.Value);
 				parameters.AddWithValue("p_name", studentGroupBlank.Name!);
 				parameters.AddWithValue("p_abbreviation", studentGroupBlank.Abbreviation!);
-				parameters.AddWithValue("p_training_format", studentGroupBlank.TrainingFormat!);
+				parameters.AddWithValue("p_training_format", (int)studentGroupBlank.TrainingFormat!);
 				parameters.AddWithValue("p_study_start_year", studentGroupBlank.StudyStartYear!.Value);
 				parameters.AddWithValue("p_study_end_year", studentGroupBlank.StudyEndYear!.Value);
 				parameters.AddWithValue("p_date_now", DateTime.UtcNow);

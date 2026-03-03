@@ -27,7 +27,7 @@ internal static class StudentGroupsConverter
 			reader.GetGuid(reader.GetOrdinal("id")),
 			reader.GetString(reader.GetOrdinal("name")),
 			reader.GetString(reader.GetOrdinal("abbreviation")),
-			(TrainingFormat)reader.GetInt32((reader.GetOrdinal("training_format"))),
+			(TrainingFormat)reader.GetInt32(reader.GetOrdinal("training_format")),
 			reader.GetInt32(reader.GetOrdinal("study_start_year")),
 			reader.GetInt32(reader.GetOrdinal("study_end_year"))
 		);

@@ -15,7 +15,7 @@ CREATE TABLE students (
     last_name varchar NOT NULL,
     first_name varchar NOT NULL,
     patronymic varchar NULL,
-    gender varchar NOT NULL,
+    gender int4 NOT NULL,
     date_of_birth timestamp NOT NULL,
     average_grade numeric(3,2) NOT NULL CHECK (average_grade BETWEEN 0 AND 5),
     special_notes text[],

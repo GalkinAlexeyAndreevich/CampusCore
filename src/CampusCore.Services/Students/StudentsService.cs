@@ -28,11 +28,11 @@ public class StudentsService(IStudentsRepository studentsRepository) : IStudents
         if (!String.IsNullOrWhiteSpace(studentBlank.Patronymic) && studentBlank.Patronymic.Length > MAX_NAME_LENGTH)
             return Result.Failed($"Отчество студента слишком длинное. Максимально допустимо {MAX_NAME_LENGTH} символов");
 
-        if (String.IsNullOrWhiteSpace(studentBlank.Gender))
+        if (studentBlank.Gender is null)
             return Result.Failed("Укажите пол студента");
         
-        if (studentBlank.Gender is not ("male" or "female"))
-            return Result.Failed("Пол может быть либо мужчина, либо женщина");
+        if (!Enum.IsDefined(studentBlank.Gender.Value))
+            return Result.Failed("Пол может быть либо мужской, либо женский");
         
         if (studentBlank.DateOfBirth is null)
             return Result.Failed("Укажите дату рождения студента");

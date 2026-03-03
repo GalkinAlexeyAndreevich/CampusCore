@@ -1,11 +1,13 @@
-﻿namespace CampusCore.Services.Students.Repositories.Models;
+﻿using CampusCore.Domain.Students.Enums;
+
+namespace CampusCore.Services.Students.Repositories.Models;
 
 public class StudentDb(
     Guid id,
     String lastName,
     String firstName,
     String? patronymic,
-    String gender,
+    Gender gender,
     DateTime dateOfBirth,
     decimal averageGrade,
     String[]? specialNotes,
@@ -16,7 +18,7 @@ public class StudentDb(
     public String LastName { get; set; } = lastName;
     public String FirstName { get; set; } = firstName;
     public String? Patronymic { get; set; } = patronymic;
-    public String Gender { get; set; } = gender;
+    public Gender Gender { get; set; } = gender;
     public DateTime DateOfBirth { get; set; } = dateOfBirth;
     public decimal AverageGrade { get; set; } = averageGrade;
     public String[]? SpecialNotes { get; set; } = specialNotes;

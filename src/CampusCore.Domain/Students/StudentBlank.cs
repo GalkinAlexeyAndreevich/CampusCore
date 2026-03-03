@@ -1,4 +1,6 @@
-﻿namespace CampusCore.Domain.Students;
+﻿using CampusCore.Domain.Students.Enums;
+
+namespace CampusCore.Domain.Students;
 
 public class StudentBlank
 {
@@ -6,7 +8,7 @@ public class StudentBlank
 	public String? LastName { get; set; }
 	public String? FirstName { get; set; }
 	public String? Patronymic { get; set; }
-	public String? Gender { get; set; }
+	public Gender? Gender { get; set; }
 	public DateTime? DateOfBirth { get; set; }
 	public decimal? AverageGrade { get; set; } 
 	public String[]? SpecialNotes { get; set; }

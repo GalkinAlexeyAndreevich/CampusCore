@@ -1,4 +1,5 @@
 ﻿using CampusCore.Domain.Students;
+using CampusCore.Domain.Students.Enums;
 using CampusCore.Services.Students.Repositories.Models;
 using Npgsql;
 
@@ -32,7 +33,7 @@ internal static class StudentsConverter
             reader.IsDBNull(reader.GetOrdinal("patronymic"))
                 ? null
                 : reader.GetString(reader.GetOrdinal("patronymic")),
-            reader.GetString(reader.GetOrdinal("gender")),
+            (Gender)reader.GetInt32(reader.GetOrdinal("gender")),
             reader.GetDateTime(reader.GetOrdinal("date_of_birth")),
             reader.GetDecimal(reader.GetOrdinal("average_grade")),
             reader.IsDBNull(reader.GetOrdinal("special_notes"))

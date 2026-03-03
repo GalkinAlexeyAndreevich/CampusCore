@@ -9,7 +9,6 @@ public class StudentGroupsService(IStudentGroupsRepository studentGroupsReposito
 {
 	private const Int32 MAX_NAME_LENGTH = 255;
 	private const Int32 MAX_ABBREVIATION_LENGTH = 64;
-	private const Int32 MAX_TRAINING_FORMAT_LENGTH = 64;
 	private const Int32 MIN_YEAR = 1900;
 	private const Int32 MAX_YEAR = 2100;
 
@@ -27,11 +26,11 @@ public class StudentGroupsService(IStudentGroupsRepository studentGroupsReposito
 		if (studentGroupBlank.Abbreviation.Length > MAX_ABBREVIATION_LENGTH)
 			return Result.Failed($"Аббревиатура группы слишком длинная. Максимально допустимо {MAX_ABBREVIATION_LENGTH} символов");
 
-		if (String.IsNullOrWhiteSpace(studentGroupBlank.TrainingFormat))
+		if (studentGroupBlank.TrainingFormat is null)
 			return Result.Failed("Укажите формат обучения");
 
-		if (studentGroupBlank.TrainingFormat.Length > MAX_TRAINING_FORMAT_LENGTH)
-			return Result.Failed($"Формат обучения указан слишком длинно. Максимально допустимо {MAX_TRAINING_FORMAT_LENGTH} символов");
+		if (!Enum.IsDefined(studentGroupBlank.TrainingFormat.Value))
+			return Result.Failed("Формат обучения может быть очный или заочный");
 
 		if (studentGroupBlank.StudyStartYear is null)
 			return Result.Failed("Укажите год начала обучения");

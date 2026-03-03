@@ -2,7 +2,7 @@ CREATE TABLE student_groups(
    id uuid NOT NULL,
    name varchar NOT NULL,
    abbreviation varchar NOT NULL,
-   training_format varchar NOT NULL,
+   training_format int4 NOT NULL,
    study_start_year int4 NOT NULL,
    study_end_year int4 NOT NULL,
 

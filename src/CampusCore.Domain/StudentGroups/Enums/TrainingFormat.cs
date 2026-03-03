@@ -4,9 +4,9 @@ namespace CampusCore.Domain.StudentGroups.Enums;
 
 public enum TrainingFormat
 {
-	[Display(Name = "Очная")]
+	[Display(Name = "Очный")]
 	FullTime = 1,
 
-	[Display(Name = "Заочная")]
+	[Display(Name = "Заочный")]
 	PartTime = 2,
 }

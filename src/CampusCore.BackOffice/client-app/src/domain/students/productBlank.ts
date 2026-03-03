@@ -1,4 +1,4 @@
-import { ProductCategory } from './enums/productCategory';
+import { ProductCategory } from './enums/gender';
 import { Product } from './product';
 
 export interface ProductBlank {
@@ -9,8 +9,8 @@ export interface ProductBlank {
 	price: number | null;
 }
 
-export const ProductBlankUtils = {
-	getDefault(): ProductBlank {
+export namespace ProductBlank {
+	export function getDefault(): ProductBlank {
 		return {
 			id: null,
 			category: null,
@@ -18,8 +18,9 @@ export const ProductBlankUtils = {
 			description: null,
 			price: null
 		};
-	},
-	fromProduct(product: Product): ProductBlank {
+	}
+
+	export function fromProduct(product: Product): ProductBlank {
 		return {
 			id: product.id,
 			category: product.category,
@@ -28,4 +29,4 @@ export const ProductBlankUtils = {
 			price: product.price
 		};
 	}
-} as const;
+}

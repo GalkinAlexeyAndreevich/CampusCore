@@ -1,6 +1,6 @@
-import { AppBar, Box, Typography } from "@mui/material";
+import { AppBar, Box, Button } from "@mui/material";
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 export function Layout() {
   return (
@@ -16,15 +16,13 @@ export function Layout() {
             paddingX: 2,
           }}
         >
-          <Box
-            sx={{
-              width: "fit-content",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <Typography sx={{ fontWeight: "bold" }}>CampusCore</Typography>
+          <Box sx={{ display: "flex", alignItems: "center"}}>
+            <Button color="inherit" component={Link} to="/student">
+              Студенты
+            </Button>
+            <Button color="inherit" component={Link} to="/student_group">
+              Группы
+            </Button>
           </Box>
         </Box>
       </AppBar>

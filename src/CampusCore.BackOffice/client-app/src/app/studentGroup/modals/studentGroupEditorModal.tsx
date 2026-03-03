@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ProductCategory } from '../../../domain/products/enums/productCategory';
 import { Product } from '../../../domain/products/product';
-import { ProductBlank, ProductBlankUtils } from '../../../domain/products/productBlank';
+import { ProductBlank } from '../../../domain/products/productBlank';
 import { ProductsProvider } from '../../../domain/products/productsProvider';
 import { Button } from '../../../shared/components/buttons/button';
 import { Input } from '../../../shared/components/inputs/input';
@@ -16,7 +16,7 @@ interface Props {
 }
 
 export function ProductEditorModal(props: Props) {
-	const [productBlank, setProductBlank] = useState<ProductBlank>(ProductBlankUtils.getDefault());
+	const [productBlank, setProductBlank] = useState<ProductBlank>(ProductBlank.getDefault());
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -29,16 +29,16 @@ export function ProductEditorModal(props: Props) {
 				const product: Product | null = await ProductsProvider.getProductById(props.productId);
 				if (product == null) throw 'Product is null';
 
-				productBlank = ProductBlankUtils.fromProduct(product);
+				productBlank = ProductBlank.fromProduct(product);
 			}
 
-			setProductBlank(productBlank ?? ProductBlankUtils.getDefault());
+			setProductBlank(productBlank ?? ProductBlank.getDefault());
 		}
 
 		loadProductBlank();
 
 		return () => {
-			setProductBlank(ProductBlankUtils.getDefault());
+			setProductBlank(ProductBlank.getDefault());
 			setErrorMessage(null);
 		};
 	}, [props.isOpen, props.productId]);

@@ -4,6 +4,6 @@ namespace CampusCore.BackOffice.Controllers.Infrastructure;
 
 public class HomeController : AppController
 {
-	[Route("/"), Route("/products"), Route("/student_group")]
+	[Route("/"), Route("/products"), Route("/student"), Route("/student_group")]
 	public IActionResult Index() => App();
 }

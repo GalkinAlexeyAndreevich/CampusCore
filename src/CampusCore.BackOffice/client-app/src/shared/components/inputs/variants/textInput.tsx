@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material';
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, HTMLInputTypeAttribute } from 'react';
 import { InputProps as DefaultProps } from '../input';
 
 export interface Props extends DefaultProps {
@@ -8,8 +8,8 @@ export interface Props extends DefaultProps {
 	value: string | null;
 	onChange: (value: string | null) => void;
 
-	isPassword?: boolean;
 	required?: boolean;
+	inputType?: HTMLInputTypeAttribute;
 }
 
 export function TextInput(props: Props) {
@@ -22,9 +22,10 @@ export function TextInput(props: Props) {
 
 	return (
 		<TextField
-			type={props.isPassword ? 'password' : 'text'}
+			type={props.inputType ?? 'text'}
 			label={props.title}
-			autoComplete={'new-password'}
+			slotProps={props.inputType === 'date' ? { inputLabel: { shrink: true } } : undefined}
+			autoComplete={props.inputType === 'password' ? 'new-password' : undefined}
 			placeholder={props.placeholder}
 			className={props.className}
 			size={props.size}

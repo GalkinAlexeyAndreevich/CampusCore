@@ -13,7 +13,7 @@ export interface StudentBlank {
 	groupId: string | null;
 }
 
-export const ProductBlankUtils = {
+export const StudentBlankUtils = {
 	getDefault(): StudentBlank {
 		return {
 			id: null,

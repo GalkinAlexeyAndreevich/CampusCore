@@ -9,11 +9,13 @@ type SelectVariant<T> = { variant: 'select' } & SelectProps<T>;
 type TextAreaInputVariant = { variant: 'text-area' } & TextAreaInputProps;
 type TextInputVariant = { variant: 'text' } & TextInputProps;
 type PasswordInputVariant = { variant: 'password' } & TextInputProps;
+type DateInputVariant = { variant: 'date' } & TextInputProps;
 
 export type Props<T> =
 	| TextInputVariant
 	| TextAreaInputVariant
 	| PasswordInputVariant
+	| DateInputVariant
 	| NumberInputVariant
 	| SelectVariant<T>;
 
@@ -24,7 +26,9 @@ export function InputVariants<T>(props: Props<T>) {
 		case 'text-area':
 			return <TextAreaInput {...props} />;
 		case 'password':
-			return <TextInput {...props} isPassword />;
+			return <TextInput {...props} inputType='password' />;
+		case 'date':
+			return <TextInput {...props} inputType='date' />;
 		case 'number':
 			return <NumberInput {...props} />;
 		case 'select':

@@ -20,7 +20,7 @@ public class StudentsRepository : IStudentsRepository
 				parameters.AddWithValue("p_first_name", studentBlank.FirstName!);
 				parameters.AddWithValue("p_patronymic", (Object?)studentBlank.Patronymic ?? DBNull.Value);
 				parameters.AddWithValue("p_gender", studentBlank.Gender!);
-				parameters.AddWithValue("p_age", studentBlank.Age!);
+				parameters.AddWithValue("p_date_of_birth", studentBlank.DateOfBirth!);
 				parameters.AddWithValue("p_average_grade", studentBlank.AverageGrade!);
 				parameters.AddWithValue("p_special_notes", (Object?)studentBlank.SpecialNotes ?? DBNull.Value);
 				parameters.AddWithValue("p_group_id", studentBlank.GroupId!.Value);

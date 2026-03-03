@@ -7,7 +7,7 @@ public class StudentBlank
 	public String? FirstName { get; set; }
 	public String? Patronymic { get; set; }
 	public String? Gender { get; set; }
-	public Int32? Age { get; set; }
+	public DateTime? DateOfBirth { get; set; }
 	public decimal? AverageGrade { get; set; } 
 	public String[]? SpecialNotes { get; set; }
 	public Guid? GroupId { get; set; } 

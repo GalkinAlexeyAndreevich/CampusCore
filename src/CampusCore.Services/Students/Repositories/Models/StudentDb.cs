@@ -6,7 +6,7 @@ public class StudentDb(
     String firstName,
     String? patronymic,
     String gender,
-    Int32 age,
+    DateTime dateOfBirth,
     decimal averageGrade,
     String[]? specialNotes,
     Guid groupId
@@ -17,7 +17,7 @@ public class StudentDb(
     public String FirstName { get; set; } = firstName;
     public String? Patronymic { get; set; } = patronymic;
     public String Gender { get; set; } = gender;
-    public Int32 Age { get; set; } = age;
+    public DateTime DateOfBirth { get; set; } = dateOfBirth;
     public decimal AverageGrade { get; set; } = averageGrade;
     public String[]? SpecialNotes { get; set; } = specialNotes;
     public Guid GroupId { get; set; } = groupId;

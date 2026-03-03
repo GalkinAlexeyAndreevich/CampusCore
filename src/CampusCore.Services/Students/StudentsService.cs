@@ -8,7 +8,6 @@ namespace CampusCore.Services.Students;
 public class StudentsService(IStudentsRepository studentsRepository) : IStudentsService
 {
     private const Int32 MAX_NAME_LENGTH = 255;
-    private const Int32 MAX_GENDER_LENGTH = 32;
     private const decimal MIN_AVERAGE_GRADE = 0m;
     private const decimal MAX_AVERAGE_GRADE = 5m;
 
@@ -31,16 +30,19 @@ public class StudentsService(IStudentsRepository studentsRepository) : IStudents
 
         if (String.IsNullOrWhiteSpace(studentBlank.Gender))
             return Result.Failed("Укажите пол студента");
+        
+        if (studentBlank.Gender is not ("male" or "female"))
+            return Result.Failed("Пол может быть либо мужчина, либо женщина");
+        
+        if (studentBlank.DateOfBirth is null)
+            return Result.Failed("Укажите дату рождения студента");
 
-        if (studentBlank.Gender.Length > MAX_GENDER_LENGTH)
-            return Result.Failed($"Пол студента указан слишком длинно. Максимально допустимо {MAX_GENDER_LENGTH} символов");
+        if (studentBlank.DateOfBirth.Value.Date > DateTime.Today)
+            return Result.Failed("Дата рождения не может быть в будущем");
 
-        if (studentBlank.Age is null)
-            return Result.Failed("Укажите возраст студента");
-
-        if (studentBlank.Age.Value <= 0 || studentBlank.Age.Value > 200)
-            return Result.Failed("Возраст студента должен быть в диапазоне от 0 до 200");
-
+        if (studentBlank.DateOfBirth.Value.Date < DateTime.MinValue)
+            return Result.Failed("Дата рождения слишком старая");
+        
         if (studentBlank.AverageGrade is null)
             return Result.Failed("Укажите средний балл студента");
 

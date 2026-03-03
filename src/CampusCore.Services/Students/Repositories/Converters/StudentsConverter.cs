@@ -16,7 +16,7 @@ internal static class StudentsConverter
             studentDb.FirstName,
             studentDb.Patronymic,
             studentDb.Gender,
-            studentDb.Age,
+            studentDb.DateOfBirth,
             studentDb.AverageGrade,
             studentDb.SpecialNotes,
             studentDb.GroupId
@@ -33,7 +33,7 @@ internal static class StudentsConverter
                 ? null
                 : reader.GetString(reader.GetOrdinal("patronymic")),
             reader.GetString(reader.GetOrdinal("gender")),
-            reader.GetInt32(reader.GetOrdinal("age")),
+            reader.GetDateTime(reader.GetOrdinal("date_of_birth")),
             reader.GetDecimal(reader.GetOrdinal("average_grade")),
             reader.IsDBNull(reader.GetOrdinal("special_notes"))
                 ? null

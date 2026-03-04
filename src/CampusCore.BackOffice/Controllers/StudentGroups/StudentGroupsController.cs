@@ -25,7 +25,7 @@ public class StudentGroupsController(IStudentGroupsService studentGroupsService)
 		return studentGroupsService.GetStudentGroup(groupId);
 	}
 
-	[HttpGet("student-groups/mark_as_deleted")]
+	[HttpPost("student-groups/mark_as_deleted")]
 	public Result MarkStudentGroupAsDeleted([FromQuery] Guid groupId)
 	{
 		return studentGroupsService.MarkStudentGroupAsDeleted(groupId);

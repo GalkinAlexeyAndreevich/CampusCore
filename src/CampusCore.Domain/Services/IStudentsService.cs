@@ -8,5 +8,6 @@ public interface IStudentsService
     Result SaveStudent(StudentBlank studentBlank);
     Student[] GetAllStudents();
     Student? GetStudent(Guid studentId);
+    StudentScholarship[]? CalcScholarshipOnStudents(Guid[] studentIds);
     Result MarkStudentAsDeleted(Guid studentId);
 }

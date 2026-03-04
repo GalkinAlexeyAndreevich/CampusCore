@@ -86,6 +86,20 @@ export function StudentGroupPage() {
 		setRemoveStudentGroupConfirmModalState({ studentGroupId: null, ...ConfirmModalState.getClosed() });
 	}
 
+	function getCourse(group: StudentGroup): string {
+		const now = new Date();
+		const currentYear = now.getFullYear();
+		// Начало года смотрим от сентября
+		const academicYearStartYear = now.getMonth() + 1 >= 9 ? currentYear : currentYear - 1;
+		const { studyStartYear, studyEndYear } = group;
+		if (academicYearStartYear < studyStartYear) return "не начат";
+
+		const course = academicYearStartYear - studyStartYear + 1;
+		const lastCourse = Math.max(1, studyEndYear - studyStartYear);
+
+		return lastCourse <= course ? "Выпустились" : String(course);
+	}
+
 	return (
 		<Container
 			sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: '12px' }}
@@ -107,11 +121,11 @@ export function StudentGroupPage() {
 				<TableContainer sx={{ height: 'inherit' }}>
 					<Table stickyHeader>
 						<TableHead>
-							<TableRow>								
+							<TableRow>
 								<TableCell>Название</TableCell>
 								<TableCell>Абревиатура</TableCell>
-								<TableCell>Год начала обучения</TableCell>
-								<TableCell>Год окончания обучения</TableCell>
+								<TableCell>Период обучения</TableCell>
+								<TableCell>Курс</TableCell>
 								<TableCell>Формат обучения</TableCell>
 								<TableCell>Управление</TableCell>
 							</TableRow>
@@ -128,8 +142,8 @@ export function StudentGroupPage() {
 
 										<TableCell width='20%'>{studentGroup.name}</TableCell>
 										<TableCell width='20%'>{studentGroup.abbreviation}</TableCell>
-										<TableCell width='15%'>{studentGroup.studyStartYear}</TableCell>
-										<TableCell width='15%'>{studentGroup.studyEndYear}</TableCell>
+										<TableCell width='15%'>{studentGroup.studyStartYear} - {studentGroup.studyEndYear}</TableCell>
+										<TableCell width='15%'>{getCourse(studentGroup)}</TableCell>
 										<TableCell width='15%'>
 											{TrainingFormatUtils.getDisplayName(studentGroup.trainingFormat)}
 										</TableCell>

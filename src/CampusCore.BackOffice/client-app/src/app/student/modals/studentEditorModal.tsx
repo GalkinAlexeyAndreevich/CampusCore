@@ -1,3 +1,4 @@
+import { Box, Chip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Button } from '../../../shared/components/buttons/button';
 import { Input } from '../../../shared/components/inputs/input';
@@ -21,6 +22,7 @@ export function StudentEditorModal(props: Props) {
 	const [studentBlank, setStudentBlank] = useState<StudentBlank>(StudentBlankUtils.getDefault());
 	const [groups, setGroups] = useState<StudentGroup[]>([]);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [specialNoteDraft, setSpecialNoteDraft] = useState<string>('');
 
 	useEffect(() => {
 		if (!props.isOpen) return;
@@ -44,6 +46,7 @@ export function StudentEditorModal(props: Props) {
 		return () => {
 			setStudentBlank(StudentBlankUtils.getDefault());
 			setErrorMessage(null);
+			setSpecialNoteDraft('');
 		};
 	}, [props.isOpen, props.studentId]);
 
@@ -57,16 +60,23 @@ export function StudentEditorModal(props: Props) {
 		props.onClose(true);
 	}
 
-	const specialNotesText = studentBlank.specialNotes?.join('\n') ?? '';
+	function addSpecialNote() {
+		const note = specialNoteDraft.trim();
+		if (note === '') return;
 
-	function setSpecialNotesFromText(text: string | null) {
-		if(text == null || text.trim() === '') {
-			setStudentBlank((prev) => ({ ...prev, specialNotes: null }));
-			return;
-		}
+		setStudentBlank((prev) => {
+			const notes = prev.specialNotes ?? [];
+			return { ...prev, specialNotes: [...notes, note] };
+		});
+		setSpecialNoteDraft('');
+	}
 
-		const notes = text.split('\n').map((s) => s.trim()).filter((s) => s.length > 0);
-		setStudentBlank((prev) => ({ ...prev, specialNotes: notes }));
+	function removeSpecialNoteByIndex(index: number) {
+		setStudentBlank((prev) => {
+			const notes = prev.specialNotes ?? [];
+			const next = notes.filter((_, i) => i !== index);
+			return { ...prev, specialNotes: next.length > 0 ? next : null };
+		});
 	}
 
 	const selectedGroup = groups.find((g) => g.id === studentBlank.groupId) ?? null;
@@ -134,18 +144,40 @@ export function StudentEditorModal(props: Props) {
 						title='Группа'
 						options={groups}
 						getOptionLabel={(option) => option.name}
-						isOptionEqualToValue={(a, b) => a.id === b.id}
+						isOptionEqualToValue={(option1, option2) => option1.id === option2.id}
 						value={selectedGroup}
 						onChange={(group) => setStudentBlank((prev) => ({ ...prev, groupId: group?.id ?? null }))}
 						required
 					/>
-					<Input
-						variant='text-area'
-						title='Особые пометки (каждая с новой строки)'
-						minRows={3}
-						value={specialNotesText}
-						onChange={(v) => setSpecialNotesFromText(v)}
-					/>
+					<Box sx={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+						<Box sx={{ flex: 1 }}>
+							<Input
+								variant='text'
+								title='Особая отметка'
+								value={specialNoteDraft}
+								onChange={(v) => setSpecialNoteDraft(v ?? '')}
+							/>
+						</Box>
+						<Button
+							variant='add'
+							title='Добавить'
+							onClick={() => addSpecialNote()}
+							disabled={specialNoteDraft.trim() === ''}
+						/>
+					</Box>
+					<Box sx={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+						{
+							(studentBlank.specialNotes ?? []).map((note, index) => (
+								<Chip
+									key={`student_note__${index}`}
+									label={note}
+									size='small'
+									variant='outlined'
+									onDelete={() => removeSpecialNoteByIndex(index)}
+								/>
+							))
+						}
+					</Box>
 				</Modal.Body>
 				<Modal.Footer>
 					<Button variant='save' onClick={() => saveStudent()} />

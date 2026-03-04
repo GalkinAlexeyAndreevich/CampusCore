@@ -1,5 +1,7 @@
 import {
 	Container,
+	FormControlLabel,
+	Checkbox,
 	Paper,
 	Table,
 	TableBody,
@@ -7,7 +9,9 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	Typography
+	Typography,
+	Chip,
+	Box
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Button } from '../../shared/components/buttons/button';
@@ -32,7 +36,9 @@ interface RemoveStudentConfirmModalState extends ConfirmModalState {
 
 export function StudentPage() {
 	const [students, setStudents] = useState<Student[]>([]);
+	const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
 	const [groups, setGroups] = useState<StudentGroup[]>([]);
+	const [showCurrentStudents, setShowCurrentStudents] = useState(true);
 
 	const [studentEditorModalState, setStudentEditorModalState] = useState<StudentEditorModalState>({
 		studentId: null,
@@ -48,6 +54,19 @@ export function StudentPage() {
 		loadGroups();
 	}, []);
 
+	useEffect(() => {
+		if (students.length === 0 || groups.length === 0) return;
+		filterStudents(students);
+	}, [showCurrentStudents, students, groups]);
+
+	function filterStudents(students: Student[]) {
+		if (showCurrentStudents) {
+			setFilteredStudents(students.filter((student) => isValidCourse(student.groupId)));
+		} else {
+			setFilteredStudents(students);
+		}
+	}
+
 	async function loadStudents() {
 		try {
 			const students = await StudentProvider.getAllStudents();
@@ -62,8 +81,11 @@ export function StudentPage() {
 		try {
 			const groups = await StudentGroupProvider.getAllStudentGroups();
 			setGroups(groups);
-		} catch {
-			// ignore
+		} catch (e) {
+			if (errorMessage) return;
+
+			const message = e instanceof Error ? e.message : 'Unknown error';
+			setErrorMessage(message);
 		}
 	}
 
@@ -99,21 +121,42 @@ export function StudentPage() {
 		setRemoveStudentConfirmModalState({ studentId: null, ...ConfirmModalState.getClosed() });
 	}
 
-	function getCourse(groupId: string): number {
+	function handleShowGraduatedStudentsChange(event: React.ChangeEvent<HTMLInputElement>) {
+		setShowCurrentStudents(event.target.checked);
+	}
+
+	function isValidCourse(groupId: string): boolean {
 		const group = groups.find((g) => g.id === groupId);
-		if (group == null) return 0;
+		if (group == null) return false;
 
 		const now = new Date();
 		const currentYear = now.getFullYear();
 		// Начало года смотрим от сентября
 		const academicYearStartYear = now.getMonth() + 1 >= 9 ? currentYear : currentYear - 1;
 		const { studyStartYear, studyEndYear } = group;
-		if (academicYearStartYear < studyStartYear) return 0;
+		if (academicYearStartYear < studyStartYear) return false;
 
 		const course = academicYearStartYear - studyStartYear + 1;
 		const lastCourse = Math.max(1, studyEndYear - studyStartYear);
 
-		return Math.min(course, lastCourse);
+		return lastCourse >= course;
+	}
+
+	function getCourse(groupId: string): string {
+		const group = groups.find((g) => g.id === groupId);
+		if (group == null) return "Не в группе";
+
+		const now = new Date();
+		const currentYear = now.getFullYear();
+		// Начало года смотрим от сентября
+		const academicYearStartYear = now.getMonth() + 1 >= 9 ? currentYear : currentYear - 1;
+		const { studyStartYear, studyEndYear } = group;
+		if (academicYearStartYear < studyStartYear) return "Не начал";
+
+		const course = academicYearStartYear - studyStartYear + 1;
+		const lastCourse = Math.max(1, studyEndYear - studyStartYear);
+
+		return lastCourse <= course ? "Выпустился" : String(course);
 	}
 
 	function getGroupName(groupId: string): string {
@@ -158,7 +201,18 @@ export function StudentPage() {
 					paddingY: '6px'
 				}}>
 				<Typography variant='h6'>Студенты</Typography>
-				<Button variant='add' title='Создать' onClick={() => openStudentEditorModal()} />
+				<Box>
+					<FormControlLabel
+						label="Студенты, обучающиеся сейчас"
+						control={
+							<Checkbox
+								checked={showCurrentStudents}
+								onChange={handleShowGraduatedStudentsChange}
+							/>
+						}
+					/>
+					<Button variant='add' title='Создать' onClick={() => openStudentEditorModal()} />
+				</Box>
 			</Paper>
 			<Paper elevation={3} sx={{ height: 'calc(100% - 52px)' }}>
 				<TableContainer sx={{ height: 'inherit' }}>
@@ -181,7 +235,7 @@ export function StudentPage() {
 									<TableCell colSpan={8}>Пусто</TableCell>
 								</TableRow>
 							)}
-							{students.map((student) => (
+							{filteredStudents.map((student) => (
 								<TableRow key={`student__${student.id}`}>
 									<TableCell width='20%'>{getFio(student)}</TableCell>
 									<TableCell width='10%'>{GenderUtils.getDisplayName(student.gender)}</TableCell>
@@ -189,7 +243,18 @@ export function StudentPage() {
 									<TableCell width='10%'>{student.averageGrade}</TableCell>
 									<TableCell width='13%'>{getGroupName(student.groupId)}</TableCell>
 									<TableCell width='13%'>{getCourse(student.groupId)}</TableCell>
-									<TableCell width='13%'>{student.specialNotes}</TableCell>
+									<TableCell width='13%'>
+										<Box sx={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+											{(student.specialNotes ?? []).map((note, index) => (
+												<Chip
+													key={`student_note__${index}`}
+													label={note}
+													size='small'
+													variant='outlined'
+												/>
+											))}
+										</Box>
+									</TableCell>
 									<TableCell>
 										<Button
 											type='icon'

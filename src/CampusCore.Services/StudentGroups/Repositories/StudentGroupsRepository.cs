@@ -36,6 +36,20 @@ public class StudentGroupsRepository : IStudentGroupsRepository
 
 		return groupDbs.ToStudentGroups();
 	}
+	
+	public StudentGroup[] GetStudentGroupsByIds(Guid[] groupIds)
+	{
+		StudentGroupDb[] groupDbs = DatabaseUtils.GetAll(
+			Sql.GetStudentGroupsByIds,
+			(parameters) =>
+			{
+				parameters.AddWithValue("@p_groupIds", groupIds);
+			},
+			(reader) => reader.ToStudentGroupDb()
+		);
+
+		return groupDbs.ToStudentGroups();
+	}
 
 	public StudentGroup? GetStudentGroup(Guid groupId)
 	{

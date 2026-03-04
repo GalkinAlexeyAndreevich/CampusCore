@@ -43,6 +43,11 @@ internal static class Sql
 			SELECT * FROM student_groups
 			WHERE id = @p_groupId AND deleted_at IS NULL
 		""";
+	internal static String GetStudentGroupsByIds =>
+		"""
+			SELECT * FROM student_groups
+			WHERE id = ANY(@p_groupIds) AND deleted_at IS NULL
+		""";
 
 	internal static String MarkStudentGroupAsDeleted =>
 		"""

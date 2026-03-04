@@ -17,6 +17,7 @@ public class StudentsService(
     private const Int32 MAX_NAME_LENGTH = 255;
     private const decimal MIN_AVERAGE_GRADE = 0m;
     private const decimal MAX_AVERAGE_GRADE = 5m;
+    private const decimal MIN_AVERAGE_GRADE_SCHOLARSHIP = 4m;
 
     public Result SaveStudent(StudentBlank studentBlank)
     {
@@ -104,7 +105,6 @@ public class StudentsService(
 
     public StudentScholarship[]? CalcScholarshipOnStudents(Guid[] studentIds)
     {
-        Decimal MIN_AVERAGE_GRADE = 4;
         Console.WriteLine($"studentIds {studentIds}");
         Student[] students = studentsRepository.GetStudentsByIds(studentIds);
         Console.WriteLine($"students length {students.Length}");
@@ -118,7 +118,7 @@ public class StudentsService(
         {
             StudentGroup? group = groups.FirstOrDefault(g => g.Id == student.GroupId);
             Console.WriteLine($"{student.Id} {group?.Name}");
-            if (group is null || student.AverageGrade < MIN_AVERAGE_GRADE)
+            if (group is null || student.AverageGrade < MIN_AVERAGE_GRADE_SCHOLARSHIP)
             {
                 scholarships.Add(new StudentScholarship(student.Id, 0));
                 continue;

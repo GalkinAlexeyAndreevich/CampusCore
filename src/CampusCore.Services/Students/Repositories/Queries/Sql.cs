@@ -48,6 +48,7 @@ internal static class Sql
         """;
 
     internal static String GetStudentById => "SELECT * FROM students WHERE id = @p_studentId AND deleted_at IS NULL";
+    internal static String GetStudentsByIds => "SELECT * FROM students WHERE id = ANY(@p_studentIds) AND deleted_at IS NULL";
 
     internal static String MarkStudentAsDeleted =>
         """

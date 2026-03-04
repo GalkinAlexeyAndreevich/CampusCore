@@ -99,9 +99,48 @@ export function StudentPage() {
 		setRemoveStudentConfirmModalState({ studentId: null, ...ConfirmModalState.getClosed() });
 	}
 
+	function getCourse(groupId: string): number {
+		const group = groups.find((g) => g.id === groupId);
+		if (group == null) return 0;
+
+		const now = new Date();
+		const currentYear = now.getFullYear();
+		// Начало года смотрим от сентября
+		const academicYearStartYear = now.getMonth() + 1 >= 9 ? currentYear : currentYear - 1;
+		const { studyStartYear, studyEndYear } = group;
+		if (academicYearStartYear < studyStartYear) return 0;
+
+		const course = academicYearStartYear - studyStartYear + 1;
+		const lastCourse = Math.max(1, studyEndYear - studyStartYear);
+
+		return Math.min(course, lastCourse);
+	}
+
 	function getGroupName(groupId: string): string {
 		const group = groups.find((g) => g.id === groupId);
-		return group ? group.name : groupId;
+		return group?.name || '-';
+	}
+
+	function getFio(student: Student): string {
+		return `${student.lastName} ${student.firstName} ${student.patronymic ?? ''}`;
+	}
+
+	function formatDateOfBirth(value: string | null | undefined): string {
+		if (String.isNullOrWhitespace(value)) return '—';
+		const date = new Date(value);
+		const formatted = date.toLocaleDateString('ru-RU', {
+			day: '2-digit',
+			month: '2-digit',
+			year: 'numeric',
+		});
+		return formatted;
+	}
+
+	function formatAge(value: string | null | undefined): string {
+		if (String.isNullOrWhitespace(value)) return '—';
+		const date = new Date(value);
+		const age = new Date().getFullYear() - date.getFullYear();
+		return `${age} (${formatDateOfBirth(value)})`;
 	}
 
 	return (
@@ -126,13 +165,13 @@ export function StudentPage() {
 					<Table stickyHeader>
 						<TableHead>
 							<TableRow>
-								<TableCell>Фамилия</TableCell>
-								<TableCell>Имя</TableCell>
-								<TableCell>Отчество</TableCell>
+								<TableCell>ФИО</TableCell>
 								<TableCell>Пол</TableCell>
-								<TableCell>Дата рождения</TableCell>
+								<TableCell>Возраст</TableCell>
 								<TableCell>Средний балл</TableCell>
 								<TableCell>Группа</TableCell>
+								<TableCell>Курс</TableCell>
+								<TableCell>Особые отметки</TableCell>
 								<TableCell>Управление</TableCell>
 							</TableRow>
 						</TableHead>
@@ -144,13 +183,13 @@ export function StudentPage() {
 							)}
 							{students.map((student) => (
 								<TableRow key={`student__${student.id}`}>
-									<TableCell width='15%'>{student.lastName}</TableCell>
-									<TableCell width='15%'>{student.firstName}</TableCell>
-									<TableCell width='15%'>{student.patronymic ?? '—'}</TableCell>
+									<TableCell width='20%'>{getFio(student)}</TableCell>
 									<TableCell width='10%'>{GenderUtils.getDisplayName(student.gender)}</TableCell>
-									<TableCell width='12%'>{student.dateOfBirth}</TableCell>
+									<TableCell width='12%'>{formatAge(student.dateOfBirth)}</TableCell>
 									<TableCell width='10%'>{student.averageGrade}</TableCell>
 									<TableCell width='13%'>{getGroupName(student.groupId)}</TableCell>
+									<TableCell width='13%'>{getCourse(student.groupId)}</TableCell>
+									<TableCell width='13%'>{student.specialNotes}</TableCell>
 									<TableCell>
 										<Button
 											type='icon'

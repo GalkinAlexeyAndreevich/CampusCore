@@ -125,6 +125,8 @@ export function StudentEditorModal(props: Props) {
 						title='Средний балл'
 						value={studentBlank.averageGrade}
 						onChange={(averageGrade) => setStudentBlank((prev) => ({ ...prev, averageGrade }))}
+						isAvailableFractionValue
+						step={0.01}
 						required
 					/>
 					<Input

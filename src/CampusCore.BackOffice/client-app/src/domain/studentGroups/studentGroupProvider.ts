@@ -41,7 +41,7 @@ export class StudentGroupProvider {
 
 	public static async markStudentGroupAsRemoved(studentGroupId: string): Promise<Result> {
 		const response = await fetch(`/student-groups/mark_as_deleted?groupId=${studentGroupId}`, {
-			method: 'GET',
+			method: 'POST',
 			headers: this.headers
 		});
 		const json = await response.json();

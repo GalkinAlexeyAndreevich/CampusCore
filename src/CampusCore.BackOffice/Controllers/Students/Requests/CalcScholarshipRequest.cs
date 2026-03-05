@@ -1,4 +1,4 @@
-namespace CampusCore.BackOffice.Controllers.Students;
+namespace CampusCore.BackOffice.Controllers.Students.Requests;
 
 public class CalcScholarshipRequest
 {

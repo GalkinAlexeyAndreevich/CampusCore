@@ -1,12 +1,12 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { ProductsPage } from '../../products/productsPage';
 import { InfrastructureLink } from './infrastructureLink';
+import { StudentPage } from '../../student/studentPage';
 
 export function InfrastructureRouter() {
 	return (
 		<>
-			<Route path={InfrastructureLink.index} element={<ProductsPage />} />
+			<Route path={InfrastructureLink.index} element={<StudentPage />} />
 		</>
 	);
 }

@@ -20,6 +20,7 @@ public static class ServiceConfigurator
 		collection.AddSingleton<IProductsRepository, ProductsRepository>();
 		
 		collection.AddSingleton<IStudentsService, StudentsService>();
+		collection.AddSingleton<IStudentScholarshipCalculator, StudentScholarshipCalculator>();
 		collection.AddSingleton<IStudentsRepository, StudentsRepository>();
 
 		collection.AddSingleton<IStudentGroupsService, StudentGroupsService>();

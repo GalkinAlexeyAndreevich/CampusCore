@@ -11,13 +11,13 @@ namespace CampusCore.Services.Students;
 
 public class StudentsService(
     IStudentsRepository studentsRepository,
-    IStudentGroupsRepository studentGroupsRepository
+    IStudentGroupsRepository studentGroupsRepository,
+    IStudentScholarshipCalculator studentScholarshipCalculator
 ) : IStudentsService
 {
     private const Int32 MAX_NAME_LENGTH = 255;
-    private const decimal MIN_AVERAGE_GRADE = 0m;
+    private const decimal MIN_AVERAGE_GRADE = 2m;
     private const decimal MAX_AVERAGE_GRADE = 5m;
-    private const decimal MIN_AVERAGE_GRADE_SCHOLARSHIP = 4m;
 
     public Result SaveStudent(StudentBlank studentBlank)
     {
@@ -81,58 +81,22 @@ public class StudentsService(
         return studentsRepository.GetStudent(studentId);
     }
 
-    private static Int32 CalcCourseSafe(StudentGroup group, DateTime now)
-    {
-        try
-        {
-            Int32 academicYearStartYear = now.Month >= 9 ? now.Year : now.Year - 1;
-
-            if (academicYearStartYear < group.StudyStartYear) return 0;
-
-            Int32 course = academicYearStartYear - group.StudyStartYear + 1;
-            Int32 lastCourse = Math.Max(1, group.StudyEndYear - group.StudyStartYear);
-
-            if (course < 1) return 0;
-            if (course > lastCourse) return 0;
-
-            return course;
-        }
-        catch
-        {
-            return 0;
-        }
-    }
-
     public StudentScholarship[]? CalcScholarshipOnStudents(Guid[] studentIds)
     {
-        Console.WriteLine($"studentIds {studentIds}");
+        if (studentIds.Length == 0) return Array.Empty<StudentScholarship>();
+
         Student[] students = studentsRepository.GetStudentsByIds(studentIds);
-        Console.WriteLine($"students length {students.Length}");
-        Guid[] groupIds = students.Select(s => s.GroupId).ToArray();
+        Guid[] groupIds = students.Select(s => s.GroupId).Distinct().ToArray();
         StudentGroup[] groups = studentGroupsRepository.GetStudentGroupsByIds(groupIds);
+        Dictionary<Guid, StudentGroup> groupsById = groups.ToDictionary(g => g.Id, g => g);
 
         List<StudentScholarship> scholarships = [];
         DateTime now = DateTime.Now;
 
         foreach (Student student in students)
         {
-            StudentGroup? group = groups.FirstOrDefault(g => g.Id == student.GroupId);
-            Console.WriteLine($"{student.Id} {group?.Name}");
-            if (group is null || student.AverageGrade < MIN_AVERAGE_GRADE_SCHOLARSHIP)
-            {
-                scholarships.Add(new StudentScholarship(student.Id, 0));
-                continue;
-            }
-
-            Int32 course = CalcCourseSafe(group, now);
-
-            Double scholarship = course == 0
-                ? 0
-                : (Double)(student.AverageGrade * 500) * Math.Sqrt(course);
-
-            StudentScholarship scholarshipResult = new StudentScholarship(student.Id, scholarship);
-            Console.WriteLine($"{student.Id} {scholarship} {scholarshipResult.StudentId} {scholarshipResult.Scholarship}");
-            scholarships.Add(scholarshipResult);
+            groupsById.TryGetValue(student.GroupId, out StudentGroup? group);
+            scholarships.Add(studentScholarshipCalculator.Calculate(student, group, now));
         }
 
         return scholarships.ToArray();

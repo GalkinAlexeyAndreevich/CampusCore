@@ -35,7 +35,7 @@ export const StudentBlankUtils = {
 			firstName: student.firstName,
 			patronymic: student.patronymic,
 			gender: student.gender,
-			dateOfBirth: student.dateOfBirth,
+			dateOfBirth: student.dateOfBirth.split('T')[0],
 			averageGrade: student.averageGrade,
 			specialNotes: student.specialNotes,
 			groupId: student.groupId,

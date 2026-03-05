@@ -25,20 +25,13 @@ public class StudentsController(IStudentsService studentsService) : AppControlle
 		return studentsService.GetStudent(studentId);
 	}
 	
-	public class CalcScholarshipRequest
-	{
-		public Guid[]? StudentIds { get; set; }
-	}
-	
 	[HttpPost("students/calc-scholarships")]
 	public StudentScholarship[]? CalcScholarshipOnStudents([FromBody] CalcScholarshipRequest request)
 	{
-		Guid[] ids = request.StudentIds ?? Array.Empty<Guid>();
-		Console.WriteLine($"calc-scholarships studentIdsCount={ids.Length}");
+		Guid[] ids = request.StudentIds ?? [];
 		return studentsService.CalcScholarshipOnStudents(ids);
 	}
 	
-
 	[HttpPost("students/mark_as_deleted")]
 	public Result MarkStudentAsDeleted([FromQuery] Guid studentId)
 	{

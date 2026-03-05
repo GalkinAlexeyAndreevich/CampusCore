@@ -83,7 +83,7 @@ public class StudentsService(
 
     public StudentScholarship[]? CalcScholarshipOnStudents(Guid[] studentIds)
     {
-        if (studentIds.Length == 0) return Array.Empty<StudentScholarship>();
+        if (studentIds.Length == 0) return [];
 
         Student[] students = studentsRepository.GetStudentsByIds(studentIds);
         Guid[] groupIds = students.Select(s => s.GroupId).Distinct().ToArray();

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CampusCore.BackOffice.Controllers.Students;
 
+[Route("api")]
 public class StudentsController(IStudentsService studentsService) : AppController
 {
 	[HttpPost("students/save")]

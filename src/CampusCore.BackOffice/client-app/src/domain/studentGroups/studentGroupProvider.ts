@@ -9,7 +9,7 @@ export class StudentGroupProvider {
 	];
 
 	public static async saveStudentGroup(studentGroupBlank: StudentGroupBlank): Promise<Result> {
-		const response = await fetch('/student-groups/save', {
+		const response = await fetch('/api/student-groups/save', {
 			method: 'POST',
 			headers: this.headers,
 			body: JSON.stringify(studentGroupBlank)
@@ -20,7 +20,7 @@ export class StudentGroupProvider {
 	}
 
 	public static async getAllStudentGroups(): Promise<StudentGroup[]> {
-		const response = await fetch('/student-groups', {
+		const response = await fetch('/api/student-groups', {
 			method: 'GET',
 			headers: this.headers
 		});
@@ -30,7 +30,7 @@ export class StudentGroupProvider {
 	}
 
 	public static async getStudentGroupById(studentGroupId: string): Promise<StudentGroup | null> {
-		const response = await fetch(`/student-groups/get_by_id?groupId=${studentGroupId}`, {
+		const response = await fetch(`/api/student-groups/get_by_id?groupId=${studentGroupId}`, {
 			method: 'GET',
 			headers: this.headers
 		});
@@ -40,7 +40,7 @@ export class StudentGroupProvider {
 	}
 
 	public static async markStudentGroupAsRemoved(studentGroupId: string): Promise<Result> {
-		const response = await fetch(`/student-groups/mark_as_deleted?groupId=${studentGroupId}`, {
+		const response = await fetch(`/api/student-groups/mark_as_deleted?groupId=${studentGroupId}`, {
 			method: 'POST',
 			headers: this.headers
 		});

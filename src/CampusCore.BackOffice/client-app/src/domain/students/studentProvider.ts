@@ -10,7 +10,7 @@ export class StudentProvider {
   ];
 
   public static async saveStudent(studentBlank: StudentBlank): Promise<Result> {
-    const response = await fetch("/students/save", {
+    const response = await fetch("/api/students/save", {
       method: "POST",
       headers: this.headers,
       body: JSON.stringify(studentBlank),
@@ -21,7 +21,7 @@ export class StudentProvider {
   }
 
   public static async getAllStudents(): Promise<Student[]> {
-    const response = await fetch("/students", {
+    const response = await fetch("/api/students", {
       method: "GET",
       headers: this.headers,
     });
@@ -33,7 +33,7 @@ export class StudentProvider {
   public static async getStudentById(
     studentId: string,
   ): Promise<Student | null> {
-    const response = await fetch(`/students/get_by_id?studentId=${studentId}`, {
+    const response = await fetch(`/api/students/get_by_id?studentId=${studentId}`, {
       method: "GET",
       headers: this.headers,
     });
@@ -45,7 +45,7 @@ export class StudentProvider {
   public static async calcScholarshipOnStudents(
     studentIds: string[],
   ): Promise<ScholarshipResponse[] | null> {
-    const response = await fetch(`/students/calc-scholarships`, {
+    const response = await fetch(`/api/students/calc-scholarships`, {
       method: "POST",
       headers: this.headers,
       body: JSON.stringify({
@@ -59,7 +59,7 @@ export class StudentProvider {
 
   public static async markStudentAsRemoved(studentId: string): Promise<Result> {
     const response = await fetch(
-      `/students/mark_as_deleted?studentId=${studentId}`,
+      `/api/students/mark_as_deleted?studentId=${studentId}`,
       {
         method: "POST",
         headers: this.headers,

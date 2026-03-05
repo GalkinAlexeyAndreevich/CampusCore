@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CampusCore.BackOffice.Controllers.StudentGroups;
 
+[Route("api")]
 public class StudentGroupsController(IStudentGroupsService studentGroupsService) : AppController
 {
 	[HttpPost("student-groups/save")]

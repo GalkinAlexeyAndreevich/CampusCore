@@ -37,4 +37,6 @@ app.UseResponseCompression()
 	.UseRouting()
 	.UseEndpoints(endpoints => endpoints.MapControllers());
 
+app.MapFallbackToController("{*path:nonfile}", "Index", "Home");
+
 app.Run();

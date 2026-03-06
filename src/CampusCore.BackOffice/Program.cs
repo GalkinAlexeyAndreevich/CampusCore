@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using CampusCore.Scheduler;
 using CampusCore.Services;
 using CampusCore.Tools.Utils.Json;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -14,6 +15,8 @@ builder.Host.ConfigureServices(
 			.AddJsonOptions(options => TextJsonSerializer.Configure(options.JsonSerializerOptions));
 
 		serviceCollection.AddSingleton<IJsonSerializer>(new TextJsonSerializer());
+
+		serviceCollection.AddScheduler();
 
 		serviceCollection.Configure<GzipCompressionProviderOptions>(options =>
 		{

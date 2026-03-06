@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CampusCore.Services", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CampusCore.Migrator", "src\CampusCore.Migrator\CampusCore.Migrator.csproj", "{663C6F60-B9FE-4137-84B2-509C219636C7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CampusCore.Scheduler", "src\CampusCore.Scheduler\CampusCore.Scheduler.csproj", "{0CBCBE73-28F3-4FDE-8B2B-5D7DEF292EC5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{663C6F60-B9FE-4137-84B2-509C219636C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{663C6F60-B9FE-4137-84B2-509C219636C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{663C6F60-B9FE-4137-84B2-509C219636C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CBCBE73-28F3-4FDE-8B2B-5D7DEF292EC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CBCBE73-28F3-4FDE-8B2B-5D7DEF292EC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CBCBE73-28F3-4FDE-8B2B-5D7DEF292EC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CBCBE73-28F3-4FDE-8B2B-5D7DEF292EC5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

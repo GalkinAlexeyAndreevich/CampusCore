@@ -10,12 +10,11 @@ internal static class StudentNameStatisticsConverter
         [.. statisticDbs.Select(ToStudentNameStatistic)];
 
     internal static StudentNameStatistic ToStudentNameStatistic(this StudentNameStatisticDb statisticDb) =>
-        new(statisticDb.Id, statisticDb.StatisticDate, statisticDb.Name, statisticDb.RepeatCount, statisticDb.CreatedAt);
+        new(statisticDb.StatisticDate, statisticDb.Name, statisticDb.RepeatCount, statisticDb.CreatedAt);
 
     internal static StudentNameStatisticDb ToStudentNameStatisticDb(this NpgsqlDataReader reader)
     {
         return new StudentNameStatisticDb(
-            reader.GetGuid(reader.GetOrdinal("id")),
             reader.GetFieldValue<DateOnly>(reader.GetOrdinal("statistic_date")),
             reader.GetString(reader.GetOrdinal("name")),
             reader.GetInt32(reader.GetOrdinal("repeat_count")),

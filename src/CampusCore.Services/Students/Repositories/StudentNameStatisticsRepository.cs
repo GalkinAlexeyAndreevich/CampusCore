@@ -15,7 +15,6 @@ public class StudentNameStatisticsRepository : IStudentNameStatisticsRepository
             Sql.SaveStudentNameStatistic,
             (parameters) =>
             {
-                parameters.AddWithValue("p_id", statistic.Id);
                 parameters.AddWithValue("p_statistic_date", statistic.StatisticDate);
                 parameters.AddWithValue("p_name", statistic.Name);
                 parameters.AddWithValue("p_repeat_count", statistic.RepeatCount);

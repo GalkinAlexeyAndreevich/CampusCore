@@ -60,14 +60,12 @@ internal static class Sql
     internal static String SaveStudentNameStatistic =>
         """
             INSERT INTO student_name_statistic (
-                id,
                 statistic_date,
                 name,
                 repeat_count,
                 created_at
             )
             VALUES (
-                @p_id,
                 @p_statistic_date,
                 @p_name,
                 @p_repeat_count,

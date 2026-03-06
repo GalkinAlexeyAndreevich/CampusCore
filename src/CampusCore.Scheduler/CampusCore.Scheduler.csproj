@@ -13,6 +13,7 @@
     </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CampusCore.Domain\CampusCore.Domain.csproj" />
     <ProjectReference Include="..\CampusCore.Tools\CampusCore.Tools.csproj" />
   </ItemGroup>
 

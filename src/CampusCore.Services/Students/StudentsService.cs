@@ -9,7 +9,8 @@ namespace CampusCore.Services.Students;
 
 public class StudentsService(
     IStudentsRepository studentsRepository,
-    IStudentGroupsRepository studentGroupsRepository
+    IStudentGroupsRepository studentGroupsRepository,
+    IStudentNameStatisticsRepository studentNameStatisticsRepository
 ) : IStudentsService
 {
     private const Int32 MAX_NAME_LENGTH = 255;
@@ -79,7 +80,7 @@ public class StudentsService(
         return studentsRepository.GetStudent(studentId);
     }
 
-    public StudentScholarship[]? CalcScholarshipOnStudents(Guid[] studentIds)
+    public StudentScholarship[] CalcScholarshipOnStudents(Guid[] studentIds)
     {
         if (studentIds.Length == 0) return [];
 
@@ -89,12 +90,21 @@ public class StudentsService(
         Dictionary<Guid, StudentGroup> groupsById = groups.ToDictionary(g => g.Id, g => g);
 
         List<StudentScholarship> scholarships = [];
-        DateTime now = DateTime.Now;
 
         foreach (Student student in students)
         {
             groupsById.TryGetValue(student.GroupId, out StudentGroup? group);
-            scholarships.Add(CalcScholarship(student, group));
+            if (group is null || student.AverageGrade < MIN_AVERAGE_GRADE_SCHOLARSHIP)
+            {
+                scholarships.Add(new StudentScholarship(student.Id, 0));
+                continue;
+            }
+
+            Int32 course = group.CalcCourseSafe();
+            Double scholarship = course == 0
+                ? 0
+                : (Double)(student.AverageGrade * 500) * Math.Sqrt(course);
+            scholarships.Add(new StudentScholarship(student.Id, scholarship));
         }
 
         return scholarships.ToArray();
@@ -109,18 +119,43 @@ public class StudentsService(
         studentsRepository.MarkStudentAsDeleted(studentId);
         return Result.Success();
     }
-    
-    private StudentScholarship CalcScholarship(Student student, StudentGroup? group)
+
+    public void InsertStudentNameStatistic()
     {
-        if (group is null || student.AverageGrade < MIN_AVERAGE_GRADE_SCHOLARSHIP)
-            return new StudentScholarship(student.Id, 0);
+        StudentNameStatistic[] statistics = CalculateStudentNameStatistics();
+        if (statistics.Length == 0) return;
 
-        Int32 course = group.CalcCourseSafe();
+        DateOnly statisticDate = statistics[0].StatisticDate;
+        if (studentNameStatisticsRepository.HasForDate(statisticDate)) return;
 
-        Double scholarship = course == 0
-            ? 0
-            : (Double)(student.AverageGrade * 500) * Math.Sqrt(course);
+        foreach (StudentNameStatistic statistic in statistics)
+        {
+            studentNameStatisticsRepository.SaveStatistic(statistic);
+        }
+    }
 
-        return new StudentScholarship(student.Id, scholarship);
+    private StudentNameStatistic[] CalculateStudentNameStatistics()
+    {
+        Student[] students = studentsRepository.GetAllStudents();
+        if (students.Length == 0) return [];
+
+        Guid[] groupIds = students.Select(s => s.GroupId).Distinct().ToArray();
+        StudentGroup[] groups = studentGroupsRepository.GetStudentGroupsByIds(groupIds);
+
+        HashSet<Guid> activeGroupIds = groups
+            .Where(g => g.CalcCourseSafe() > 0)
+            .Select(g => g.Id)
+            .ToHashSet();
+
+        DateTime createdAt = DateTime.UtcNow;
+        DateOnly statisticDate = DateOnly.FromDateTime(createdAt);
+
+        return students
+            .Where(s => activeGroupIds.Contains(s.GroupId))
+            .Select(s => s.FirstName?.Trim())
+            .Where(name => !String.IsNullOrWhiteSpace(name))
+            .GroupBy(name => name!, StringComparer.OrdinalIgnoreCase)
+            .Select(g => new StudentNameStatistic(statisticDate, g.Key, g.Count(), createdAt))
+            .ToArray();
     }
 }

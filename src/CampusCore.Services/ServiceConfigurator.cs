@@ -15,6 +15,7 @@ public static class ServiceConfigurator
 	{
 		collection.AddSingleton<IStudentsService, StudentsService>();
 		collection.AddSingleton<IStudentsRepository, StudentsRepository>();
+		collection.AddSingleton<IStudentNameStatisticsRepository, StudentNameStatisticsRepository>();
 
 		collection.AddSingleton<IStudentGroupsService, StudentGroupsService>();
 		collection.AddSingleton<IStudentGroupsRepository, StudentGroupsRepository>();

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using CampusCore.Domain.Services;
+﻿using CampusCore.Domain.Services;
 using CampusCore.Domain.StudentGroups;
 using CampusCore.Domain.Students;
 using CampusCore.Services.StudentGroups.Repositories.Interfaces;
@@ -11,13 +9,13 @@ namespace CampusCore.Services.Students;
 
 public class StudentsService(
     IStudentsRepository studentsRepository,
-    IStudentGroupsRepository studentGroupsRepository,
-    IStudentScholarshipCalculator studentScholarshipCalculator
+    IStudentGroupsRepository studentGroupsRepository
 ) : IStudentsService
 {
     private const Int32 MAX_NAME_LENGTH = 255;
     private const decimal MIN_AVERAGE_GRADE = 2m;
     private const decimal MAX_AVERAGE_GRADE = 5m;
+    private const decimal MIN_AVERAGE_GRADE_SCHOLARSHIP = 4m;
 
     public Result SaveStudent(StudentBlank studentBlank)
     {
@@ -96,7 +94,7 @@ public class StudentsService(
         foreach (Student student in students)
         {
             groupsById.TryGetValue(student.GroupId, out StudentGroup? group);
-            scholarships.Add(studentScholarshipCalculator.Calculate(student, group, now));
+            scholarships.Add(CalcScholarship(student, group));
         }
 
         return scholarships.ToArray();
@@ -110,5 +108,19 @@ public class StudentsService(
 
         studentsRepository.MarkStudentAsDeleted(studentId);
         return Result.Success();
+    }
+    
+    private StudentScholarship CalcScholarship(Student student, StudentGroup? group)
+    {
+        if (group is null || student.AverageGrade < MIN_AVERAGE_GRADE_SCHOLARSHIP)
+            return new StudentScholarship(student.Id, 0);
+
+        Int32 course = group.CalcCourseSafe();
+
+        Double scholarship = course == 0
+            ? 0
+            : (Double)(student.AverageGrade * 500) * Math.Sqrt(course);
+
+        return new StudentScholarship(student.Id, scholarship);
     }
 }

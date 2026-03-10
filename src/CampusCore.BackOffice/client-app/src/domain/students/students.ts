@@ -41,5 +41,10 @@ interface StudentSource {
   averageGrade: number;
   specialNotes?: string[];
   groupId: string;
-  [key: string]: unknown; 
+  [key: string]: unknown;
+}
+
+export interface StudentCountOnGroup {
+  groupId: string;
+  countStudents: number;
 }

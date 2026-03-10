@@ -1,6 +1,11 @@
 import { Result } from "../../tools/types/results/result";
 import { StudentBlank } from "./studentBlank";
-import { mapToStudent, mapToStudents, Student } from "./students";
+import {
+  mapToStudent,
+  mapToStudents,
+  Student,
+  StudentCountOnGroup,
+} from "./students";
 import { ScholarshipResponse } from "./studentScholarship";
 
 export class StudentProvider {
@@ -33,13 +38,31 @@ export class StudentProvider {
   public static async getStudentById(
     studentId: string,
   ): Promise<Student | null> {
-    const response = await fetch(`/api/students/get_by_id?studentId=${studentId}`, {
-      method: "GET",
-      headers: this.headers,
-    });
+    const response = await fetch(
+      `/api/students/get_by_id?studentId=${studentId}`,
+      {
+        method: "GET",
+        headers: this.headers,
+      },
+    );
     const json = await response.json();
 
     return mapToStudent(json);
+  }
+
+  public static async GetStudentsCountOnGroupIds(
+    groupIds: string[],
+  ): Promise<StudentCountOnGroup[]> {
+    const response = await fetch("/api/students/get_student_count_on_groups", {
+      method: "POST",
+      headers: this.headers,
+      body: JSON.stringify({
+        groupIds: groupIds,
+      }),
+    });
+    const json = await response.json();
+
+    return json;
   }
 
   public static async calcScholarshipOnStudents(

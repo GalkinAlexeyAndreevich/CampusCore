@@ -27,6 +27,13 @@ public class StudentsController(IStudentsService studentsService) : AppControlle
 		return studentsService.GetStudent(studentId);
 	}
 	
+	[HttpPost("students/get_student_count_on_groups")]
+	public StudentCountOnGroup[] GetStudentCountOnGroups([FromBody] GetStudentCountOnGroupsRequest request)
+	{
+		Guid[] ids = request.GroupIds ?? [];
+		return studentsService.GetStudentsCountOnGroupIds(ids);
+	}
+	
 	[HttpPost("students/calc-scholarships")]
 	public StudentScholarship[]? CalcScholarshipOnStudents([FromBody] CalcScholarshipRequest request)
 	{

@@ -39,7 +39,7 @@ public class StudentsRepository : IStudentsRepository
 
 		return studentDbs.ToStudents();
 	}
-	
+
 	public Student[] GetStudentsByIds(Guid[] studentIds)
 	{
 		StudentDb[] studentDbs = DatabaseUtils.GetAll(
@@ -66,6 +66,14 @@ public class StudentsRepository : IStudentsRepository
 				(reader) => reader.ToStudentDb()
 			)
 			?.ToStudent();
+	}
+
+	public StudentCountOnGroup[] GetStudentsCountOnGroupIds(Guid[] groupIds)
+	{
+		return DatabaseUtils.GetAll(
+			Sql.GetStudentsCountOnGroupIds,
+			(parameters) => { parameters.AddWithValue("@p_groupIds", groupIds); },
+			(reader) => reader.ToStudentCountOnGroup());
 	}
 
 	public void MarkStudentAsDeleted(Guid studentId)

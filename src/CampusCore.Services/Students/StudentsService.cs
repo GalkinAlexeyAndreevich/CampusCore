@@ -80,6 +80,11 @@ public class StudentsService(
         return studentsRepository.GetStudent(studentId);
     }
 
+    public StudentCountOnGroup[] GetStudentsCountOnGroupIds(Guid[] groupIds)
+    {
+        return studentsRepository.GetStudentsCountOnGroupIds(groupIds);
+    }
+
     public StudentScholarship[] CalcScholarshipOnStudents(Guid[] studentIds)
     {
         if (studentIds.Length == 0) return [];

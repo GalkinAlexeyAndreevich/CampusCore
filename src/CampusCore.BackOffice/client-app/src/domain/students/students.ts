@@ -31,7 +31,7 @@ export function mapToStudent(data: StudentSource): Student {
 }
 
 // Предполагаемые данные с api
-interface StudentSource {
+export interface StudentSource {
   id: string;
   lastName: string;
   firstName: string;

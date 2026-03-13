@@ -1,5 +1,6 @@
 import { Result } from "../../tools/types/results/result";
 import { StudentBlank } from "./studentBlank";
+import { mapToStudentDetails, StudentDetail } from "./studentDetail";
 import {
   mapToStudent,
   mapToStudents,
@@ -33,6 +34,16 @@ export class StudentProvider {
     const json = await response.json();
 
     return mapToStudents(json);
+  }
+
+  public static async getAllStudentsDetailed(): Promise<StudentDetail[]> {
+    const response = await fetch("/api/students/detail", {
+      method: "GET",
+      headers: this.headers,
+    });
+    const json = await response.json();
+
+    return mapToStudentDetails(json);
   }
 
   public static async getStudentById(

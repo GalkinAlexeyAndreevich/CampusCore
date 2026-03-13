@@ -19,11 +19,10 @@ import { ConfirmModal } from "../../shared/components/modals/confirmModal";
 import { Notification } from "../../shared/components/notification";
 import { ConfirmModalState } from "../../shared/types/confirmModalState";
 import { StudentEditorModal } from "./modals/studentEditorModal";
-import { Student } from "../../domain/students/students";
 import { StudentProvider } from "../../domain/students/studentProvider";
 import { GenderUtils } from "../../domain/students/enums/gender";
-import { StudentGroupProvider } from "../../domain/studentGroups/studentGroupProvider";
 import { StudentGroup } from "../../domain/studentGroups/studentGroups";
+import { StudentDetail } from "../../domain/students/studentDetail";
 
 type StudentEditorModalState = {
 	studentId: string | null;
@@ -40,9 +39,8 @@ interface ScholarshipMap {
 
 
 export function StudentPage() {
-	const [students, setStudents] = useState<Student[]>([]);
-	const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
-	const [groups, setGroups] = useState<StudentGroup[]>([]);
+	const [students, setStudents] = useState<StudentDetail[]>([]);
+	const [filteredStudents, setFilteredStudents] = useState<StudentDetail[]>([]);
 	const [showCurrentStudents, setShowCurrentStudents] = useState(true);
 	const [scholarshipMap, setScholarshipMap] = useState<ScholarshipMap>(
 		{}
@@ -63,18 +61,17 @@ export function StudentPage() {
 
 	useEffect(() => {
 		loadStudents();
-		loadGroups();
 	}, []);
 
 	useEffect(() => {
-		if (students.length === 0 || groups.length === 0) return;
+		if (students.length === 0) return;
 		filterStudents(students);
-	}, [showCurrentStudents, students, groups]);
+	}, [showCurrentStudents, students]);
 
-	function filterStudents(students: Student[]) {
+	function filterStudents(students: StudentDetail[]) {
 		if (showCurrentStudents) {
 			setFilteredStudents(
-				students.filter((student) => isValidCourse(student.groupId)),
+				students.filter((student) => isValidCourse(student.group)),
 			);
 		} else {
 			setFilteredStudents(students);
@@ -83,21 +80,9 @@ export function StudentPage() {
 
 	async function loadStudents() {
 		try {
-			const students = await StudentProvider.getAllStudents();
+			const students = await StudentProvider.getAllStudentsDetailed();
 			setStudents(students);
 		} catch (e) {
-			const message = e instanceof Error ? e.message : "Unknown error";
-			setErrorMessage(message);
-		}
-	}
-
-	async function loadGroups() {
-		try {
-			const groups = await StudentGroupProvider.getAllStudentGroups();
-			setGroups(groups);
-		} catch (e) {
-			if (errorMessage) return;
-
 			const message = e instanceof Error ? e.message : "Unknown error";
 			setErrorMessage(message);
 		}
@@ -119,7 +104,6 @@ export function StudentPage() {
 			const message = e instanceof Error ? e.message : "Unknown error";
 			setErrorMessage(message);
 		}
-
 	} 
 
 	function openStudentEditorModal(studentId?: string) {
@@ -171,8 +155,7 @@ export function StudentPage() {
 		setShowCurrentStudents(event.target.checked);
 	}
 
-	function isValidCourse(groupId: string): boolean {
-		const group = groups.find((g) => g.id === groupId);
+	function isValidCourse(group: StudentGroup | null): boolean {
 		if (group == null) return false;
 
 		const now = new Date();
@@ -189,8 +172,7 @@ export function StudentPage() {
 		return lastCourse >= course;
 	}
 
-	function getCourse(groupId: string): string {
-		const group = groups.find((g) => g.id === groupId);
+	function getCourse(group: StudentGroup | null): string {
 		if (group == null) return "Не в группе";
 
 		const now = new Date();
@@ -207,12 +189,7 @@ export function StudentPage() {
 		return lastCourse <= course ? "Выпустился" : String(course);
 	}
 
-	function getGroupName(groupId: string): string {
-		const group = groups.find((g) => g.id === groupId);
-		return group?.name || "-";
-	}
-
-	function getFio(student: Student): string {
+	function getFio(student: StudentDetail): string {
 		return `${student.lastName} ${student.firstName} ${student.patronymic ?? ""}`;
 	}
 
@@ -306,10 +283,10 @@ export function StudentPage() {
 									</TableCell>
 									<TableCell width="10%">{student.averageGrade}</TableCell>
 									<TableCell width="13%">
-										{getGroupName(student.groupId)}
+										{student.group.name || "-"}
 									</TableCell>
 									<TableCell width="5%">
-										{getCourse(student.groupId)}
+										{getCourse(student.group)}
 									</TableCell>
 									<TableCell width="13%">
 										<Box
@@ -339,7 +316,7 @@ export function StudentPage() {
 											variant="confirm"
 											size="small"
 											title="Посчитать стипендию"
-											disabled={!isValidCourse(student.groupId)}
+											disabled={!isValidCourse(student.group)}
 											onClick={() => calcScholarshipOnStudents([student.id])}
 										/>
 										<Button

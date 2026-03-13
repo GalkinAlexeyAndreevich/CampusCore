@@ -12,4 +12,5 @@ public interface IStudentsService
     StudentCountOnGroup[] GetStudentsCountOnGroupIds(Guid[] studentIds); 
     void InsertStudentNameStatistic();
     Result MarkStudentAsDeleted(Guid studentId);
+    StudentDetail[] GetAllStudentsDetailed();
 }

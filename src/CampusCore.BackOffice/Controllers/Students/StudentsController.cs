@@ -20,6 +20,12 @@ public class StudentsController(IStudentsService studentsService) : AppControlle
 	{
 		return studentsService.GetAllStudents();
 	}
+	
+	[HttpGet("students/detail")]
+	public StudentDetail[] GetAllStudentsDetailed()
+	{
+		return studentsService.GetAllStudentsDetailed();
+	}
 
 	[HttpGet("students/get_by_id")]
 	public Student? GetStudent([FromQuery] Guid studentId)

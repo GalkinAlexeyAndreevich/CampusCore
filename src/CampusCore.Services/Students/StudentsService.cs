@@ -74,6 +74,11 @@ public class StudentsService(
     {
         return studentsRepository.GetAllStudents();
     }
+    
+    public StudentDetail[] GetAllStudentsDetailed()
+    {
+        return studentsRepository.GetAllStudentsDetailed();
+    }
 
     public Student? GetStudent(Guid studentId)
     {
@@ -162,5 +167,5 @@ public class StudentsService(
             .GroupBy(name => name!, StringComparer.OrdinalIgnoreCase)
             .Select(g => new StudentNameStatistic(statisticDate, g.Key, g.Count(), createdAt))
             .ToArray();
-    }
+    } 
 }

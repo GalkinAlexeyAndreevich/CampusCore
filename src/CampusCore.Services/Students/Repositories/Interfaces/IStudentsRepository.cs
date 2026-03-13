@@ -6,7 +6,6 @@ public interface IStudentsRepository
 {
 	void SaveStudent(StudentBlank studentBlank);
 	Student[] GetAllStudents();
-	StudentDetail[] GetAllStudentsDetailed();
 	Student[] GetStudentsByIds(Guid[] studentIds);
 	Student? GetStudent(Guid studentId);
 	StudentCountOnGroup[] GetStudentsCountOnGroupIds(Guid[] groupIds);

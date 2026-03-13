@@ -74,10 +74,32 @@ public class StudentsService(
     {
         return studentsRepository.GetAllStudents();
     }
-    
+
     public StudentDetail[] GetAllStudentsDetailed()
     {
-        return studentsRepository.GetAllStudentsDetailed();
+        Student[] students = studentsRepository.GetAllStudents();
+        StudentGroup[] studentGroups = studentGroupsRepository.GetAllStudentGroups();
+        Dictionary<Guid, StudentGroup> groupsById = studentGroups.ToDictionary(g => g.Id, g => g);
+
+        return students
+            .Select(s =>
+            {
+                groupsById.TryGetValue(s.GroupId, out StudentGroup? group);
+
+                return new StudentDetail(
+                    s.Id,
+                    s.LastName,
+                    s.FirstName,
+                    s.Patronymic,
+                    s.Gender,
+                    s.DateOfBirth,
+                    s.AverageGrade,
+                    s.SpecialNotes,
+                    s.GroupId,
+                    group
+                );
+            })
+            .ToArray();
     }
 
     public Student? GetStudent(Guid studentId)

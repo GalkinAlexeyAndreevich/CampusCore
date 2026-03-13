@@ -39,15 +39,6 @@ public class StudentsRepository : IStudentsRepository
 
 		return studentDbs.ToStudents();
 	}
-	
-	public StudentDetail[] GetAllStudentsDetailed()
-	{
-		return DatabaseUtils.GetAll(
-			Sql.GetAllStudentsDetailed,
-			(parameters) => { },
-			(reader) => reader.ToStudentDetail()
-		);
-	}
 
 	public Student[] GetStudentsByIds(Guid[] studentIds)
 	{

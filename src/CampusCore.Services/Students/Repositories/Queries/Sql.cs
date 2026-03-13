@@ -47,22 +47,6 @@ internal static class Sql
         	ORDER BY created_at DESC 
         """;
 
-    internal static String GetAllStudentsDetailed =>
-        """
-            SELECT
-                s.*,
-                sg.id group_id,
-                sg.name group_name,
-                sg.abbreviation group_abbreviation,
-                sg.training_format group_training_format,
-                sg.study_start_year group_study_start_year,
-                sg.study_end_year group_study_end_year
-            FROM students s
-            LEFT JOIN student_groups sg ON sg.id = s.group_id AND sg.deleted_at IS NULL
-            WHERE s.deleted_at IS NULL
-            ORDER BY s.created_at DESC;
-        """;
-
     internal static String GetStudentById => "SELECT * FROM students WHERE id = @p_studentId AND deleted_at IS NULL";
     internal static String GetStudentsByIds => "SELECT * FROM students WHERE id = ANY(@p_studentIds) AND deleted_at IS NULL";
 

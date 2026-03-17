@@ -78,7 +78,8 @@ public class StudentsService(
     public StudentDetail[] GetAllStudentsDetailed()
     {
         Student[] students = studentsRepository.GetAllStudents();
-        StudentGroup[] studentGroups = studentGroupsRepository.GetAllStudentGroups();
+        Guid[] groupIds = students.Select(s => s.GroupId).ToArray();
+        StudentGroup[] studentGroups = studentGroupsRepository.GetStudentGroupsByIds(groupIds);
         Dictionary<Guid, StudentGroup> groupsById = studentGroups.ToDictionary(g => g.Id, g => g);
 
         return students
@@ -189,5 +190,5 @@ public class StudentsService(
             .GroupBy(name => name!, StringComparer.OrdinalIgnoreCase)
             .Select(g => new StudentNameStatistic(statisticDate, g.Key, g.Count(), createdAt))
             .ToArray();
-    } 
+    }
 }

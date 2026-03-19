@@ -122,7 +122,7 @@ export function StudentPage() {
 		setRemoveStudentConfirmModalState({
 			studentId,
 			...ConfirmModalState.getOpen(
-				`Вы действительно хотите удалить студента "${studentName}"`,
+				`Вы действительно хотите удалить студента "${studentName}"?`,
 			),
 		});
 	}

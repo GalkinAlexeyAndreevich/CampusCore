@@ -1,3 +1,13 @@
+## CampusCore
+
+Учебный проект на **C# / .NET** и **React** для отработки построения full-stack приложения.
+
+### Архитектура / Architecture
+- **Backend (ASP.NET Core)**: серверная часть в `src/CampusCore.BackOffice` реализует HTTP API, обработку сценариев и доступ к данным.
+- **Frontend (React)**: клиент в `src/CampusCore.BackOffice/client-app` реализует интерфейс BackOffice и взаимодействует с API по сети.
+- **Database (PostgreSQL)**: централизованное хранилище данных предметной области.
+- **Migrations**: SQL-миграции в `src/CampusCore.Migrator/Migrations/000000/` (на текущем этапе применяются вручную).
+
 ### Необходимые технологии
 - .NET SDK 9.x
 - IIS Express 10

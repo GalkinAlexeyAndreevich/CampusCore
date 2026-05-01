@@ -39,7 +39,7 @@ internal static class Sql
         group_id = @p_group_id,
         updated_at = @p_date_now
         """;
-
+    
     internal static String GetAllStudents =>
         """
         	SELECT * FROM students 
@@ -48,11 +48,51 @@ internal static class Sql
         """;
 
     internal static String GetStudentById => "SELECT * FROM students WHERE id = @p_studentId AND deleted_at IS NULL";
+    internal static String GetStudentsByIds => "SELECT * FROM students WHERE id = ANY(@p_studentIds) AND deleted_at IS NULL";
 
+    internal static String GetStudentsCountOnGroupIds =>
+        """
+            SELECT group_id, COUNT(*) count_students FROM students
+            WHERE group_id = ANY(@p_groupIds) AND deleted_at IS NULL
+            group by group_id
+        """;
+    
     internal static String MarkStudentAsDeleted =>
         """
         	UPDATE students
         	SET deleted_at = @p_deletedAt
         	WHERE id = @p_studentId
+        """;
+
+    internal static String SaveStudentNameStatistic =>
+        """
+            INSERT INTO student_name_statistic (
+                statistic_date,
+                name,
+                repeat_count,
+                created_at
+            )
+            VALUES (
+                @p_statistic_date,
+                @p_name,
+                @p_repeat_count,
+                @p_created_at
+            )
+            ON CONFLICT (statistic_date, name) DO UPDATE SET
+                repeat_count = EXCLUDED.repeat_count
+        """;
+
+    internal static String HasStudentNameStatisticByDate =>
+        """
+            SELECT 1
+            FROM student_name_statistic
+            WHERE statistic_date = @p_statistic_date
+            LIMIT 1
+        """;
+
+    internal static String GetStudentNameStatistics =>
+        """
+            SELECT * FROM student_name_statistic
+            ORDER BY statistic_date DESC, repeat_count DESC
         """;
 }

@@ -8,7 +8,7 @@ module.exports = (env) =>
 		devtool: 'source-map',
 		cache: {
 			type: 'filesystem',
-			allowCollectingMemory: true
+			// allowCollectingMemory: true
 		},
 		watchOptions: {
 			ignored: ['src/declares/**', 'node_modules/**']

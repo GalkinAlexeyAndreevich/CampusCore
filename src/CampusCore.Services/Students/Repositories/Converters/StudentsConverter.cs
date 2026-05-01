@@ -42,4 +42,12 @@ internal static class StudentsConverter
             reader.GetGuid(reader.GetOrdinal("group_id"))
         );
     }
+    
+    internal static StudentCountOnGroup ToStudentCountOnGroup(this NpgsqlDataReader reader)
+    {
+        return new StudentCountOnGroup(
+            reader.GetGuid(reader.GetOrdinal("group_id")),
+            reader.GetInt32(reader.GetOrdinal("count_students"))
+        );
+    }
 }

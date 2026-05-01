@@ -25,7 +25,7 @@ export function mapToStudentGroup(data: StudentGroupSource): StudentGroup {
 }
 
 // Предполагаемые данные с api
-interface StudentGroupSource {
+export interface StudentGroupSource {
   id: string;
   name: string;
   abbreviation: string;

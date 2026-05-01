@@ -6,6 +6,7 @@ public interface IStudentGroupsRepository
 {
 	void SaveStudentGroup(StudentGroupBlank studentGroupBlank);
 	StudentGroup[] GetAllStudentGroups();
+	StudentGroup[] GetStudentGroupsByIds(Guid[] groupIds);
 	StudentGroup? GetStudentGroup(Guid groupId);
 	void MarkStudentGroupAsDeleted(Guid groupId);
 }

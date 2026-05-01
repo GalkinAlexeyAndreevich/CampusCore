@@ -33,15 +33,25 @@ internal static class Sql
 
 	internal static String GetAllStudentGroups =>
 		"""
-			SELECT * FROM student_groups
-			WHERE deleted_at IS NULL
-			ORDER BY created_at DESC
+			SELECT
+				sg.*,
+				COUNT(s.id) count_students
+			FROM student_groups sg
+			LEFT JOIN students s ON s.group_id = sg.id AND s.deleted_at IS NULL
+			WHERE sg.deleted_at IS NULL
+			GROUP BY sg.id
+			ORDER BY sg.created_at DESC
 		""";
 
 	internal static String GetStudentGroupById =>
 		"""
 			SELECT * FROM student_groups
 			WHERE id = @p_groupId AND deleted_at IS NULL
+		""";
+	internal static String GetStudentGroupsByIds =>
+		"""
+			SELECT * FROM student_groups
+			WHERE id = ANY(@p_groupIds) AND deleted_at IS NULL
 		""";
 
 	internal static String MarkStudentGroupAsDeleted =>

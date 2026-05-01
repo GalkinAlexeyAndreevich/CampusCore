@@ -11,6 +11,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\CampusCore.Domain\CampusCore.Domain.csproj" />
+		<ProjectReference Include="..\CampusCore.Scheduler\CampusCore.Scheduler.csproj" />
 		<ProjectReference Include="..\CampusCore.Services\CampusCore.Services.csproj" />
 		<ProjectReference Include="..\CampusCore.Tools\CampusCore.Tools.csproj" />
 	</ItemGroup>

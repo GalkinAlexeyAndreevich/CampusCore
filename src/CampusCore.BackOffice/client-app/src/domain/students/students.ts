@@ -31,7 +31,7 @@ export function mapToStudent(data: StudentSource): Student {
 }
 
 // Предполагаемые данные с api
-interface StudentSource {
+export interface StudentSource {
   id: string;
   lastName: string;
   firstName: string;
@@ -41,5 +41,10 @@ interface StudentSource {
   averageGrade: number;
   specialNotes?: string[];
   groupId: string;
-  [key: string]: unknown; 
+  [key: string]: unknown;
+}
+
+export interface StudentCountOnGroup {
+  groupId: string;
+  countStudents: number;
 }

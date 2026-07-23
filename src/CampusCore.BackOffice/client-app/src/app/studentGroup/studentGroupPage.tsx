@@ -194,7 +194,7 @@ export function StudentGroupPage() {
             <TableBody>
               {studentGroups.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5}>Пусто</TableCell>
+                  <TableCell colSpan={7}>Пусто</TableCell>
                 </TableRow>
               )}
               {studentGroups.map((studentGroup) => {

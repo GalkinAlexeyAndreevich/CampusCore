@@ -1,6 +1,7 @@
 .idea/ 
 .vs/
 .config/
+.env
 
 node_modules
 src/CampusCore.BackOffice/wwwroot/dist/ 

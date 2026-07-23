@@ -5,7 +5,13 @@ namespace CampusCore.Tools.Utils;
 
 public static class DatabaseUtils
 {
-	private const String _connectionString = "Server=localhost;Username=postgres;Password=root;Database=campus_core";
+	private static String? _connectionString;
+
+	public static void Configure(String connectionString)
+	{
+		ArgumentException.ThrowIfNullOrWhiteSpace(connectionString);
+		_connectionString = connectionString;
+	}
 
 	public static Int32 Execute(String sql, Action<NpgsqlParameterCollection> getParameters) =>
 		UseSqlCommand(sql, getParameters, (command) => command.ExecuteNonQuery());
@@ -82,7 +88,9 @@ public static class DatabaseUtils
 		Func<NpgsqlCommand, T> getCommand
 	)
 	{
-		using NpgsqlConnection connection = new(_connectionString);
+		using NpgsqlConnection connection = new(
+			_connectionString ?? throw new InvalidOperationException("DatabaseUtils is not configured.")
+		);
 		connection.Open();
 
 		using NpgsqlCommand command = new();

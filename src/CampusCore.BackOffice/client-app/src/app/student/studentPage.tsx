@@ -269,7 +269,7 @@ export function StudentPage() {
 						<TableBody>
 							{students.length === 0 && (
 								<TableRow>
-									<TableCell colSpan={8}>Пусто</TableCell>
+									<TableCell colSpan={9}>Пусто</TableCell>
 								</TableRow>
 							)}
 							{filteredStudents.map((student) => (

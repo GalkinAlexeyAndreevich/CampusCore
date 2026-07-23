@@ -1,0 +1,13 @@
+.git
+.github
+.env
+.idea
+.vs
+.config
+**/bin
+**/obj
+**/node_modules
+**/wwwroot/dist
+**/*.Development.json
+**/*.user
+**/*.suo

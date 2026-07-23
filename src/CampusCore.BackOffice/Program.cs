@@ -1,10 +1,16 @@
 using System.IO.Compression;
 using CampusCore.Scheduler;
 using CampusCore.Services;
+using CampusCore.Tools.Utils;
 using CampusCore.Tools.Utils.Json;
 using Microsoft.AspNetCore.ResponseCompression;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+DatabaseUtils.Configure(
+	builder.Configuration.GetConnectionString("Default")
+		?? throw new InvalidOperationException("Connection string 'Default' is not configured.")
+);
 
 builder.Host.ConfigureServices(
 	(context, serviceCollection) =>
@@ -34,8 +40,12 @@ builder.Host.ConfigureServices(
 
 WebApplication app = builder.Build();
 
-app.UseResponseCompression()
-	.UseHttpsRedirection()
+app.UseResponseCompression();
+
+if (builder.Configuration.GetValue("UseHttpsRedirection", true))
+	app.UseHttpsRedirection();
+
+app
 	.UseStaticFiles()
 	.UseRouting()
 	.UseEndpoints(endpoints => endpoints.MapControllers());
